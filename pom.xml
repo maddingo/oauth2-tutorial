@@ -72,5 +72,6 @@
         <module>resource-server</module>
         <module>client-app</module>
         <module>joke-api</module>
+        <module>e2e-tests</module>
     </modules>
 </project>
