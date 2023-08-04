@@ -1,6 +1,5 @@
 server:
   port: 8080
-
 logging:
   level:
     root: INFO
@@ -11,6 +10,7 @@ logging:
     java.io: ERROR
     javax.management: ERROR
     reactor.netty: ERROR
+    org.springframework.boot.availability: DEBUG
 #    org.springframework.security.oauth2: INFO
 #    org.springframework.boot.autoconfigure: DEBUG
 
@@ -53,3 +53,9 @@ client-app:
   logout-redirect-uri: '/'
 messages:
   base-uri: http://localhost:8090/
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
