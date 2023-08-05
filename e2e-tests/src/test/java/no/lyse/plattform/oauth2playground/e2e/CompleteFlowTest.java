@@ -1,9 +1,8 @@
 package no.lyse.plattform.oauth2playground.e2e;
 
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.AriaRole;
+import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -31,13 +30,21 @@ public class CompleteFlowTest {
                 .toList();
 
             // Now we can start testing
-            BrowserType.LaunchOptions launchOptions = null; //new BrowserType.LaunchOptions().setHeadless(false);
+            BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setHeadless(false);
             try (
                 Playwright pw = Playwright.create();
                 Browser browser = pw.chromium().launch(launchOptions)
             ) {
                 Page page = browser.newPage();
                 page.navigate("http://localhost:8080/");
+                page.getByRole(AriaRole.HEADING, new Page.GetByRoleOptions().setLevel(2)).waitFor();
+                List<Locator> arthurSchrammJokes = page.getByRole(AriaRole.HEADING, new Page.GetByRoleOptions().setLevel(2)).all();
+                MatcherAssert.assertThat(arthurSchrammJokes, org.hamcrest.Matchers.hasSize(1));
+                arthurSchrammJokes.forEach(joke -> {
+                    assertThat(joke).isVisible();
+                    MatcherAssert.assertThat(joke.innerText(), org.hamcrest.Matchers.containsString("Arthur Schramm"));
+                });
+
                 page.click("text=Sign In");
                 assertThat(page).hasURL("http://auth-server:9000/login");
                 page.fill("input[name=\"username\"]", "user1");
