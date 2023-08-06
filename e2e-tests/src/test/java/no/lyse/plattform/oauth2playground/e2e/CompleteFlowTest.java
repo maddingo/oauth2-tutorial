@@ -2,8 +2,11 @@ package no.lyse.plattform.oauth2playground.e2e;
 
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.AriaRole;
+import com.microsoft.playwright.options.LoadState;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -14,8 +17,11 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 
 public class CompleteFlowTest {
 
+    boolean headless = Boolean.getBoolean("e2etest.headless");
+
     @Test
     void loginAndGetJokes() throws Exception {
+
         try(
             AppContainer idp = AppContainer.idp();
             AppContainer resourceServer = AppContainer.resourceServer();
@@ -30,14 +36,17 @@ public class CompleteFlowTest {
                 .toList();
 
             // Now we can start testing
-            BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setHeadless(false);
+            BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setHeadless(headless);
             try (
                 Playwright pw = Playwright.create();
                 Browser browser = pw.chromium().launch(launchOptions)
             ) {
                 Page page = browser.newPage();
                 page.navigate("http://localhost:8080/");
-                page.getByRole(AriaRole.HEADING, new Page.GetByRoleOptions().setLevel(2)).waitFor();
+
+                // wait for the components to load
+                page.waitForLoadState(LoadState.NETWORKIDLE);
+                // there should be one heading from the quotes component
                 List<Locator> arthurSchrammJokes = page.getByRole(AriaRole.HEADING, new Page.GetByRoleOptions().setLevel(2)).all();
                 MatcherAssert.assertThat(arthurSchrammJokes, org.hamcrest.Matchers.hasSize(1));
                 arthurSchrammJokes.forEach(joke -> {
@@ -55,7 +64,16 @@ public class CompleteFlowTest {
                 page.check("input[id=\"message.read\"]");
                 page.check("input[id=\"message.write\"]");
                 page.click("button[type=\"submit\"]");
-//                page.screenShot(new Page.ScreenshotOptions().setPath(Paths.get("target", "screenshot.png")));
+
+                // wait for the components to load
+                page.waitForLoadState(LoadState.NETWORKIDLE);
+                // there should be two headings from the quotes component
+                arthurSchrammJokes = page.getByRole(AriaRole.HEADING, new Page.GetByRoleOptions().setLevel(2)).all();
+                MatcherAssert.assertThat(arthurSchrammJokes, org.hamcrest.Matchers.hasSize(2));
+                arthurSchrammJokes.forEach(joke -> {
+                    assertThat(joke).isVisible();
+                    MatcherAssert.assertThat(joke.innerText(), org.hamcrest.Matchers.containsString("Arthur Schramm"));
+                });
                 
             }
         }
