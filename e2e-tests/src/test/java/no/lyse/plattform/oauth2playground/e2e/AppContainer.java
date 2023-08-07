@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
@@ -64,10 +65,11 @@ public class AppContainer implements AutoCloseable, Callable<CompletableFuture<A
     }
 
     protected State startJar() {
+        File outFile = null;
         try {
             String java = Path.of(System.getProperty("java.home"), "bin", "java").toString();
             ProcessBuilder pb = new ProcessBuilder(java, "-jar", jarFile);
-            File outFile = File.createTempFile("e2e-" + appName, ".log");
+            outFile = File.createTempFile("e2e-" + appName, ".log");
             pb.redirectOutput(outFile);
             log.info("Starting {}", appName);
             process = pb.start();
@@ -91,6 +93,13 @@ public class AppContainer implements AutoCloseable, Callable<CompletableFuture<A
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+        if (outFile != null && outFile.exists()) {
+            try {
+                log.error("Could not start {}:\n{}", appName, Files.readString(outFile.toPath()));
+            } catch (Exception e) {
+                log.error("Could not start {}", appName, e);
+            }
         }
         throw new IllegalStateException("Could not start " + appName);
     }

@@ -5,8 +5,6 @@ import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.LoadState;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -17,7 +15,7 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 
 public class CompleteFlowTest {
 
-    boolean headless = Boolean.getBoolean("e2etest.headless");
+    boolean headless = Boolean.parseBoolean(System.getProperty("e2etest.headless", "true"));
 
     @Test
     void loginAndGetJokes() throws Exception {
