@@ -1,3 +1,4 @@
+[![Build status](https://github.com/Lyse-AS/oauth2-playground/actions/workflows/maven.yml/badge.svg)](https://github.com/Lyse-AS/oauth2-playground/actions/workflows/maven.yml)
 # OAuth2 with OIDC playground
 This project runs 3 servers:
 - Authorization Server
