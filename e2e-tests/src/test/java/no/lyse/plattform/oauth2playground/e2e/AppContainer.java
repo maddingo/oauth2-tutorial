@@ -11,15 +11,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Slf4j
 public class AppContainer implements AutoCloseable, Callable<CompletableFuture<AppContainer.State>> {
+    public static final String JAVA_BIN = Path.of(System.getProperty("java.home"), "bin", "java").toString();
     private Process process;
+    private final ProcessBuilder processBuilder;
     private final String appName;
-    private final String jarFile;
     private final String hostname;
     private final int port;
     private final Function<String, Boolean> waitCondition;
@@ -32,9 +32,9 @@ public class AppContainer implements AutoCloseable, Callable<CompletableFuture<A
 
     public static AppContainer idp() {
         return new AppContainer(
+            new ProcessBuilder(JAVA_BIN, "-jar", "../authorization-server/target/authorization-server.jar", "--auth-server.issuer=http://localhost:9000"),
             "IdP",
-            "../authorization-server/target/authorization-server.jar",
-            "auth-server",
+            "localhost",
             9000,
             line -> line.contains("changed to ACCEPTING_TRAFFIC")
         );
@@ -42,8 +42,8 @@ public class AppContainer implements AutoCloseable, Callable<CompletableFuture<A
 
     public static AppContainer resourceServer() {
         return new AppContainer(
+            new ProcessBuilder(JAVA_BIN, "-jar", "../resource-server/target/resource-server.jar", "--spring.security.oauth2.resourceserver.jwt.issuer-uri=http://localhost:9000"),
             "Resource-Server",
-            "../resource-server/target/resource-server.jar",
             "localhost",
             8090,
             line -> line.contains("changed to ACCEPTING_TRAFFIC")
@@ -52,8 +52,8 @@ public class AppContainer implements AutoCloseable, Callable<CompletableFuture<A
 
     public static AppContainer clientApp() {
         return new AppContainer(
+            new ProcessBuilder(JAVA_BIN, "-jar", "../client-app/target/client-app.jar", "--spring.security.oauth2.client.provider.spring.issuer-uri=http://localhost:9000"),
             "Client-App",
-            "../client-app/target/client-app.jar",
             "localhost",
             8080,
             line -> line.contains("Started ClientApplication")
@@ -65,14 +65,12 @@ public class AppContainer implements AutoCloseable, Callable<CompletableFuture<A
     }
 
     protected State startJar() {
-        File outFile = null;
+        File outFile;
         try {
-            String java = Path.of(System.getProperty("java.home"), "bin", "java").toString();
-            ProcessBuilder pb = new ProcessBuilder(java, "-jar", jarFile);
             outFile = File.createTempFile("e2e-" + appName, ".log");
-            pb.redirectOutput(outFile);
+            processBuilder.redirectOutput(outFile);
             log.info("Starting {}", appName);
-            process = pb.start();
+            process = processBuilder.start();
             try (BufferedReader reader = new BufferedReader(new FileReader(outFile))) {
                 // If we try to read the stream too soon, we don't get any output
                 log.info("Checking if {} is ready", appName);
@@ -94,7 +92,7 @@ public class AppContainer implements AutoCloseable, Callable<CompletableFuture<A
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        if (outFile != null && outFile.exists()) {
+        if (outFile.exists()) {
             try {
                 log.error("Could not start {}:\n{}", appName, Files.readString(outFile.toPath()));
             } catch (Exception e) {
@@ -105,7 +103,7 @@ public class AppContainer implements AutoCloseable, Callable<CompletableFuture<A
     }
 
     public record State(
-        String ipAddress, Integer mappedPort
+        String hostname, Integer mappedPort
     ) {
     }
 }

@@ -6,6 +6,7 @@ import com.microsoft.playwright.options.LoadState;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 
+import java.net.URI;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
@@ -29,9 +30,14 @@ public class CompleteFlowTest {
             CompletableFuture<AppContainer.State> idpFuture = idp.call();
             AppContainer.State idpState = idpFuture.get(60L, java.util.concurrent.TimeUnit.SECONDS);
 
-            List<AppContainer.State> apps = Stream.of(resourceServer.call(), clientApp.call())
+            List<AppContainer.State> appsState = Stream.of(resourceServer.call(), clientApp.call())
                 .map(CompletableFuture::join)
                 .toList();
+
+            AppContainer.State resourceServerState = appsState.get(0);
+            AppContainer.State clientAppState = appsState.get(1);
+            URI clientAppUri = new URI("http", null, clientAppState.hostname(), clientAppState.mappedPort(), "/", null, null);
+            URI idpUri = new URI("http", null, idpState.hostname(), idpState.mappedPort(), "/", null, null);
 
             // Now we can start testing
             BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setHeadless(headless);
@@ -40,7 +46,7 @@ public class CompleteFlowTest {
                 Browser browser = pw.chromium().launch(launchOptions)
             ) {
                 Page page = browser.newPage();
-                page.navigate("http://localhost:8080/");
+                page.navigate(clientAppUri.toString());
 
                 // wait for the components to load
                 page.waitForLoadState(LoadState.NETWORKIDLE);
@@ -53,11 +59,11 @@ public class CompleteFlowTest {
                 });
 
                 page.click("text=Sign In");
-                assertThat(page).hasURL("http://auth-server:9000/login");
+                assertThat(page).hasURL(idpUri.resolve("/login").toString());
                 page.fill("input[name=\"username\"]", "user1");
                 page.fill("input[name=\"password\"]", "password");
                 page.click("button[type=\"submit\"]");
-                assertThat(page).hasURL(Pattern.compile("http://auth-server:9000/oauth2/authorize\\?.*"));
+                assertThat(page).hasURL(Pattern.compile(idpUri.resolve("/oauth2/authorize"). toString() + "\\?.*"));
                 page.check("input[id=\"profile\"]");
                 page.check("input[id=\"message.read\"]");
                 page.check("input[id=\"message.write\"]");
