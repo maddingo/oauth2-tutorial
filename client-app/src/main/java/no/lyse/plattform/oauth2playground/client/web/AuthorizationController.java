@@ -1,4 +1,4 @@
-package no.lyse.plattform.oauthplayground.client.web;
+package no.lyse.plattform.oauth2playground.client.web;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

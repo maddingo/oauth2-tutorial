@@ -9,10 +9,10 @@ export default function Home() {
 
       <Layout>
 
-        <Quotes jokeUri = {'/api/joke'} withRefreshButton = {false} />
+        <Quotes quoteUri = {'/api/quote'} withRefreshButton = {false} />
         {session ? (
             // This URL needs login
-            <Quotes jokeUri = {'/api/joke1'} withRefreshButton = {true} />
+            <Quotes quoteUri = {'/api/quote1'} withRefreshButton = {true} />
           ) : (
             <></>
           )

@@ -10,6 +10,10 @@
     <groupId>no.lyse.plattform.oauth2-playground</groupId>
     <artifactId>client-app</artifactId>
 
+    <properties>
+        <npm.skip>false</npm.skip>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -45,16 +49,12 @@
         </dependency>
         <dependency>
             <groupId>no.lyse.plattform.oauth2-playground</groupId>
-            <artifactId>joke-api</artifactId>
+            <artifactId>quotes-api</artifactId>
             <version>${project.version}</version>
+            <type>yaml</type>
+            <classifier>openapi</classifier>
         </dependency>
 
-        <!--
-        	implementation ":"
-	implementation "org.webjars:bootstrap:3.4.1"
-	implementation "org.webjars:jquery:3.4.1"
-
-        -->
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>webjars-locator-core</artifactId>
@@ -68,6 +68,15 @@
             <groupId>org.webjars</groupId>
             <artifactId>jquery</artifactId>
             <version>3.6.3</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <version>0.2.6</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -138,8 +147,56 @@
                     <nodeVersion>v18.16.1</nodeVersion>
                     <npmVersion>9.5.1</npmVersion>
                     <!--installDirectory>${project.basedir}/frontend/build</installDirectory-->
+                    <skip>${npm.skip}</skip>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-openapi</id>
+                        <phase>generate-resources</phase>
+                        <goals><goal>copy-dependencies</goal></goals>
+                        <configuration>
+                            <includeClassifiers>openapi</includeClassifiers>
+                            <includeTypes>yaml</includeTypes>
+                            <stripVersion>true</stripVersion>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <!-- support for client code generation for spring 6 and reactive is really poor, we just generate the model -->
+                            <inputSpec>${project.build.directory}/dependency/quotes-api-openapi.yaml</inputSpec>
+                            <generatorName>java</generatorName>
+                            <generateSupportingFiles>false</generateSupportingFiles>
+                            <generateApis>false</generateApis>
+                            <generateApiDocumentation>false</generateApiDocumentation>
+                            <generateModelDocumentation>false</generateModelDocumentation>
+                            <generateModelTests>false</generateModelTests>
+                            <modelPackage>no.lyse.plattform.oauth2playground.quotesapi.model</modelPackage>
+                            <configOptions>
+                                <annotationLibrary>none</annotationLibrary>
+                                <library>native</library>
+                                <useJakartaEe>true</useJakartaEe>
+                            </configOptions>
+                            <globalProperties>
+                            </globalProperties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 

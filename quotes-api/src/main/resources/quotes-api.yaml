@@ -1,0 +1,64 @@
+openapi: 3.0.3
+info:
+  title: Quotes API
+  description: Quotes API
+  version: ${project.version}
+servers:
+  - url: 'http://localhost:8080'
+    description: Development server
+paths:
+  /quotes:
+    get:
+      summary: Get all quotes
+      operationId: getQuotes
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Quote'
+  /quote:
+    get:
+      summary: Get a random quote
+      operationId: getRandomQuote
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quote'
+  /quote/{id}:
+    get:
+      summary: Get a quote
+      operationId: getQuote
+      parameters:
+          - name: id
+            in: path
+            required: true
+            description: The quote id
+            schema:
+                type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quote'
+components:
+  schemas:
+    Quote:
+      type: object
+      properties:
+        id:
+          type: string
+        quote:
+          type: string
+        author:
+          type: string
+
+  
