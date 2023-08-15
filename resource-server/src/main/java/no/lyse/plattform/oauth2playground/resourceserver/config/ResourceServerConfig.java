@@ -19,8 +19,8 @@ public class ResourceServerConfig {
         http
             .authorizeExchange(exchange -> exchange
                 .pathMatchers("/actuator/**").permitAll()
-                .pathMatchers("/messages/**").hasAuthority("SCOPE_message.read")
-                .pathMatchers("/joke/**").hasAuthority("SCOPE_message.read")
+                .pathMatchers("/quote/**").hasAuthority("SCOPE_message.read")
+                .pathMatchers("/quotes").hasAuthority("SCOPE_message.read")
                 .anyExchange().authenticated())
             .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
                 .jwt(Customizer.withDefaults()));

@@ -19,7 +19,7 @@ public class CompleteFlowTest {
     boolean headless = Boolean.parseBoolean(System.getProperty("e2etest.headless", "true"));
 
     @Test
-    void loginAndGetJokes() throws Exception {
+    void loginAndGetQuotes() throws Exception {
 
         try(
             AppContainer idp = AppContainer.idp();
@@ -63,7 +63,7 @@ public class CompleteFlowTest {
                 page.fill("input[name=\"username\"]", "user1");
                 page.fill("input[name=\"password\"]", "password");
                 page.click("button[type=\"submit\"]");
-                assertThat(page).hasURL(Pattern.compile(idpUri.resolve("/oauth2/authorize"). toString() + "\\?.*"));
+                assertThat(page).hasURL(Pattern.compile(idpUri.resolve("/oauth2/authorize") + "\\?.*"));
                 page.check("input[id=\"profile\"]");
                 page.check("input[id=\"message.read\"]");
                 page.check("input[id=\"message.write\"]");

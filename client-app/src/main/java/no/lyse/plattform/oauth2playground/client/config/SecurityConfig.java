@@ -1,4 +1,4 @@
-package no.lyse.plattform.oauthplayground.client.config;
+package no.lyse.plattform.oauth2playground.client.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,8 +43,8 @@ public class SecurityConfig {
                     .pathMatchers("/error/**", "/webjars/**", "/", "/index.html", "/favicon.ico", "/_next/**").permitAll()
                     .pathMatchers("/api/auth/**").permitAll()
                     .pathMatchers(HttpMethod.GET, "/authorized", "/authorized/**").permitAll()
-                    .pathMatchers(HttpMethod.GET, "/api/joke").permitAll()
-                    .pathMatchers(HttpMethod.GET, "/api/joke1").authenticated()
+                    .pathMatchers(HttpMethod.GET, "/api/quote").permitAll()
+                    .pathMatchers(HttpMethod.GET, "/api/quote11").authenticated()
                     .anyExchange().authenticated()
             )
             .httpBasic(basic -> basic.disable())

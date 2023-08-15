@@ -19,4 +19,4 @@ redirect:
 logging:
   level:
     root: info
-    org.springframework.security: info
+    org.springframework.security: debug

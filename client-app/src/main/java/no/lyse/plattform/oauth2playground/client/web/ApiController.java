@@ -1,25 +1,24 @@
-package no.lyse.plattform.oauthplayground.client.web;
+package no.lyse.plattform.oauth2playground.client.web;
 
 import lombok.extern.slf4j.Slf4j;
-import no.lyse.plattform.oauth2playground.jokeapi.Joke;
+import no.lyse.plattform.oauth2playground.quotesapi.model.Quote;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
-import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebSession;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
-import reactor.core.publisher.SignalType;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
@@ -30,7 +29,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
@@ -55,18 +53,18 @@ public class ApiController {
         this.clientProperties = clientProperties;
     }
 
-    @GetMapping("/joke")
-    public Mono<Joke> joke() {
-        return getJoke(clientRegistrationId("messaging-client-client-credentials"));
+    @GetMapping("/quote")
+    public Mono<Quote> quote() {
+        return getQuote(clientRegistrationId("messaging-client-client-credentials"));
     }
 
-    @GetMapping("/joke1")
-    public Mono<Joke> joke1(
+    @GetMapping("/quote1")
+    public Mono<Quote> quote1(
         //@RegisteredOAuth2AuthorizedClient("messaging-client-authorization-code")
         @RegisteredOAuth2AuthorizedClient("messaging-client-oidc")
         OAuth2AuthorizedClient authorizedClient
     ) {
-        return getJoke(oauth2AuthorizedClient(authorizedClient));
+        return getQuote(oauth2AuthorizedClient(authorizedClient));
     }
 
     @GetMapping("/auth/clients")
@@ -133,6 +131,9 @@ public class ApiController {
             );
     }*/
 
+    /**
+     * Required by React-auth.
+     */
     @PostMapping(path = "/auth/_log")
     public Mono<Map<String, String>> log(ServerWebExchange exchange) {
         return stringContent(exchange)
@@ -175,13 +176,13 @@ public class ApiController {
         return DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(expiryTime);
     }
 
-    private Mono<Joke> getJoke(Consumer<Map<String, Object>> clientAttribute) {
+    private Mono<Quote> getQuote(Consumer<Map<String, Object>> clientAttribute) {
         return this.webClient
             .get()
-            .uri(UriComponentsBuilder.fromUriString(messagesBaseUri).path("/joke").build().toUri())
+            .uri(UriComponentsBuilder.fromUriString(messagesBaseUri).path("/quote").build().toUri())
             .attributes(clientAttribute)
             .retrieve()
-            .bodyToMono(Joke.class)
+            .bodyToMono(Quote.class)
             .log();
     }
 

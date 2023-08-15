@@ -1,4 +1,4 @@
-package no.lyse.plattform.oauthplayground.client;
+package no.lyse.plattform.oauth2playground.client;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package no.lyse.plattform.oauthplayground.client.config;
+package no.lyse.plattform.oauth2playground.client.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

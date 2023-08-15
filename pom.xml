@@ -64,6 +64,16 @@
                     <artifactId>maven-site-plugin</artifactId>
                     <version>3.12.1</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.openapitools</groupId>
+                    <artifactId>openapi-generator-maven-plugin</artifactId>
+                    <version>7.0.0-beta</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.4.0</version>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
@@ -71,7 +81,7 @@
         <module>authorization-server</module>
         <module>resource-server</module>
         <module>client-app</module>
-        <module>joke-api</module>
+        <module>quotes-api</module>
         <module>e2e-tests</module>
     </modules>
 </project>
