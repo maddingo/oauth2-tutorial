@@ -1,30 +1,24 @@
 package no.lyse.plattform.oauth2playground.resourceserver.config;
 
-import com.azure.spring.cloud.autoconfigure.implementation.aad.security.AadJwtGrantedAuthoritiesConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.web.exchanges.HttpExchangesAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.config.Customizer;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
-import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @EnableWebFluxSecurity
 @Configuration(proxyBeanMethods = false)
@@ -52,7 +46,8 @@ public class ResourceServerConfig {
     }
 
     @Bean
-    public ReactiveJwtDecoder jwtDecoder(@Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}") String issuerUri, @Value("${spring.security.oauth2.resourceserver.jwt.client-id}") String clientId) {
+    @Profile("azure")
+    public ReactiveJwtDecoder jwtDecoder(@Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}") String issuerUri, @Value("${spring.security.oauth2.resourceserver.jwt.client-id:null}") String clientId) {
         NimbusReactiveJwtDecoder jwtDecoder = (NimbusReactiveJwtDecoder)
             ReactiveJwtDecoders.fromIssuerLocation(issuerUri);
         OAuth2TokenValidator<Jwt> tokenValidator = new DelegatingOAuth2TokenValidator<>(
@@ -69,7 +64,7 @@ public class ResourceServerConfig {
         ReactiveJwtAuthenticationConverter converter = new ReactiveJwtAuthenticationConverter();
 
         converter.setJwtGrantedAuthoritiesConverter((jwt) -> Flux.fromStream(
-            Optional.ofNullable(jwt.getClaimAsStringList("roles"))
+            Optional.ofNullable(jwt.getClaimAsStringList("scopes"))
                 .orElse(List.of("message.read"))// roles is missing
                 .stream()
                 .map((role) -> "SCOPE_" + role)
