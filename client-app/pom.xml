@@ -96,17 +96,31 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring.version}</version>
+                <configuration>
+                    <mainClass>no.lyse.plattform.application.MainApplication</mainClass>
+                    <image>
+                        <!--suppress UnresolvedMavenProperty -->
+                        <name>${artifacts.server}/${project.artifactId}:${project.version}</name>
+                        <publish>${acr.publish}</publish>
+                        <env>
+                            <BP_JVM_TYPE>JDK</BP_JVM_TYPE>
+                        </env>
+                    </image>
+                    <docker>
+                        <publishRegistry>
+                            <!--suppress UnresolvedMavenProperty -->
+                            <token>${env.ACR_TOKEN}</token>
+                        </publishRegistry>
+                    </docker>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>repackage</id>
-                        <phase>package</phase>
-                        <goals><goal>repackage</goal></goals>
-                    </execution>
-                    <execution>
-                        <id>docker-deploy</id>
-                        <phase>deploy</phase>
-                        <goals><goal>build-image-no-fork</goal></goals>
+                        <id>executable-jar</id>
+                        <goals>
+                            <goal>build-info</goal>
+                            <goal>repackage</goal>
+                            <goal>build-image</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

@@ -21,6 +21,7 @@
         <spring-boot.build-image.publish>true</spring-boot.build-image.publish>
         <spring-boot.build-image.imageName>${docker.image.registry}/${project.groupId}/${project.artifactId}:${project.version}</spring-boot.build-image.imageName>
         <maven.deploy.skip>true</maven.deploy.skip> <!-- skip maven deploy in favor of docker push -->
+        <artifacts.server>acrlypfelles.azurecr.io</artifacts.server>
     </properties>
 
     <dependencyManagement>
@@ -36,7 +37,7 @@
     </dependencyManagement>
 
     <build>
-        <defaultGoal>install</defaultGoal>
+        <defaultGoal>verify</defaultGoal>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -76,6 +77,26 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>com.amashchenko.maven.plugin</groupId>
+                <artifactId>gitflow-maven-plugin</artifactId>
+                <version>1.19.0</version>
+                <configuration>
+                    <pushRemote>true</pushRemote>
+                    <!-- we use major.minor.patch versioning, being 0.1.2 respectively.
+                          By default the minor version is increased.
+                          Hotfixes increase the patch version. -->
+                    <!--suppress UnresolvedMavenProperty -->
+                    <versionDigitToIncrement>${gitflowDigitToIncrement}</versionDigitToIncrement>
+
+                    <gitFlowConfig>
+                        <productionBranch>main</productionBranch>
+                        <developmentBranch>develop</developmentBranch>
+                    </gitFlowConfig>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
     <modules>
         <module>authorization-server</module>
@@ -84,4 +105,28 @@
         <module>quotes-api</module>
         <module>e2e-tests</module>
     </modules>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>Lyse Github Packages</name>
+            <url>https://maven.pkg.github.com/Lyse-AS/oauth2-playground</url>
+        </repository>
+        <snapshotRepository>
+            <id>github</id>
+            <name>Lyse Github Packages</name>
+            <url>https://maven.pkg.github.com/Lyse-AS/oauth2-playground</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/Lyse-AS/oauth2-playground</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>
