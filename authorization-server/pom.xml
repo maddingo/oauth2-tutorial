@@ -45,7 +45,7 @@
                     <image>
                         <!--suppress UnresolvedMavenProperty -->
                         <name>${artifacts.server}/${project.artifactId}:${project.version}</name>
-                        <publish>${acr.publish}</publish>
+                        <!--publish>${acr.publish}</publish-->
                         <env>
                             <BP_JVM_TYPE>JDK</BP_JVM_TYPE>
                         </env>
@@ -64,6 +64,12 @@
                             <goal>build-info</goal>
                             <goal>repackage</goal>
                             <goal>build-image</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>docker-push</id>
+                        <goals>
+                            <goal>docker-push</goal>
                         </goals>
                     </execution>
                 </executions>

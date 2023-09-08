@@ -66,6 +66,6 @@ jobs:
       - name: Build and Deploy release
         run: |
           git switch main
-          mvn -B deploy -Dacr.publish=true
+          mvn -B deploy -Dspring-boot.build-image.publish=true
         env:
           GITHUB_TOKEN: ${{ github.token }}
