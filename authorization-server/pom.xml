@@ -66,12 +66,6 @@
                             <goal>build-image</goal>
                         </goals>
                     </execution>
-                    <execution>
-                        <id>docker-push</id>
-                        <goals>
-                            <goal>docker-push</goal>
-                        </goals>
-                    </execution>
                 </executions>
             </plugin>
         </plugins>
