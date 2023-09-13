@@ -66,9 +66,14 @@ public class AppContainer implements AutoCloseable, Callable<CompletableFuture<A
 
     protected State startJar() {
         File outFile;
+        File errFile;
         try {
-            outFile = File.createTempFile("e2e-" + appName, ".log");
+            outFile = File.createTempFile("e2e-" + appName, "-out.log");
+            outFile.deleteOnExit();
+            errFile = File.createTempFile("e2e-" + appName, "-err.log");
+            errFile.deleteOnExit();
             processBuilder.redirectOutput(outFile);
+            processBuilder.redirectError(errFile);
             log.info("Starting {}", appName);
             process = processBuilder.start();
             try (BufferedReader reader = new BufferedReader(new FileReader(outFile))) {
@@ -86,6 +91,9 @@ public class AppContainer implements AutoCloseable, Callable<CompletableFuture<A
                         log.info("Waiting for {} to start, attempt {}", appName, tryCount);
                         Thread.sleep(1000L + tryCount * 1000L);
                         tryCount++;
+                    }
+                    if (!process.isAlive()) {
+                        throw new IllegalStateException("Process died: " + Files.readString(errFile.toPath()));
                     }
                 }
             }

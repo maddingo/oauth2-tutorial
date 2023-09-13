@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
-public class CompleteFlowTest {
+public class CompleteFlowIT {
 
     boolean headless = Boolean.parseBoolean(System.getProperty("e2etest.headless", "true"));
 

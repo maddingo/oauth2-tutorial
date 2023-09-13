@@ -79,7 +79,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>no.lyse.plattform.application.MainApplication</mainClass>
                     <image>
                         <!--suppress UnresolvedMavenProperty -->
                         <name>${artifacts.server}/${project.artifactId}:${project.version}</name>
