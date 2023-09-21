@@ -28,6 +28,8 @@ import org.springframework.security.oauth2.server.authorization.settings.ClientS
 import org.springframework.security.oauth2.server.authorization.settings.ConfigurationSettingNames;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 
 import java.util.List;
 import java.util.Set;
@@ -101,5 +103,15 @@ public class AuthorizationServerConfig {
         return AuthorizationServerSettings.builder()
             .issuer(issuer)
             .build();
+    }
+
+    /**
+     * Needed after docker test.
+     */
+    @Bean
+    public HttpFirewall configureFirewall() {
+        StrictHttpFirewall strictHttpFirewall = new StrictHttpFirewall();
+        strictHttpFirewall.setAllowSemicolon(true);
+        return strictHttpFirewall;
     }
 }

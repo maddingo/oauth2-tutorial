@@ -1,0 +1,31 @@
+services:
+  auth-server:
+    image: acrlypfelles.azurecr.io/authorization-server:2.0.0-SNAPSHOT
+    command:
+      - --spring.profiles.active=test
+      - --server.port=8080
+      - --auth-server.issuer=http://auth-server:8080
+    healthcheck:
+      test: ["CMD", "/layers/paketo-buildpacks_bellsoft-liberica/jdk/bin/java", "-jar", "/workspace/BOOT-INF/lib/healthcheck-client-2.0.0-SNAPSHOT.jar", "http://localhost:8080/actuator/health"]
+  resource-server:
+    image: acrlypfelles.azurecr.io/resource-server:2.0.0-SNAPSHOT
+    command:
+      - --spring.profiles.active=test
+      - --server.port=8080
+      - --spring.security.oauth2.resourceserver.jwt.issuer-uri=http://auth-server:8080
+    healthcheck:
+      test: ["CMD", "/layers/paketo-buildpacks_bellsoft-liberica/jdk/bin/java", "-jar", "/workspace/BOOT-INF/lib/healthcheck-client-2.0.0-SNAPSHOT.jar", "http://localhost:8080/actuator/health"]
+    depends_on:
+      auth-server:
+        condition: service_healthy
+  client-app:
+    image: acrlypfelles.azurecr.io/client-app:2.0.0-SNAPSHOT
+    command:
+      - --server.port=8080
+      - --spring.security.oauth2.client.provider.spring.issuer-uri=http://auth-server:8080
+      - --messages.base-uri=http://resource-server:8080
+    healthcheck:
+      test: ["CMD", "/layers/paketo-buildpacks_bellsoft-liberica/jdk/bin/java", "-jar", "/workspace/BOOT-INF/lib/healthcheck-client-2.0.0-SNAPSHOT.jar", "http://localhost:8080/actuator/health"]
+    depends_on:
+      resource-server:
+        condition: service_healthy
