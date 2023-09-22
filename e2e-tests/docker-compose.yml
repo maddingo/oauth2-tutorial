@@ -1,31 +1,50 @@
 services:
-  auth-server:
+  idp:
     image: acrlypfelles.azurecr.io/authorization-server:2.0.0-SNAPSHOT
     command:
       - --spring.profiles.active=test
       - --server.port=8080
-      - --auth-server.issuer=http://auth-server:8080
+      - --auth-server.issuer=http://idp:8080
     healthcheck:
       test: ["CMD", "/layers/paketo-buildpacks_bellsoft-liberica/jdk/bin/java", "-jar", "/workspace/BOOT-INF/lib/healthcheck-client-2.0.0-SNAPSHOT.jar", "http://localhost:8080/actuator/health"]
+      start_period: 10s
+      interval: 5s
   resource-server:
     image: acrlypfelles.azurecr.io/resource-server:2.0.0-SNAPSHOT
     command:
       - --spring.profiles.active=test
       - --server.port=8080
-      - --spring.security.oauth2.resourceserver.jwt.issuer-uri=http://auth-server:8080
+      - --spring.security.oauth2.resourceserver.jwt.issuer-uri=http://idp:8080
     healthcheck:
       test: ["CMD", "/layers/paketo-buildpacks_bellsoft-liberica/jdk/bin/java", "-jar", "/workspace/BOOT-INF/lib/healthcheck-client-2.0.0-SNAPSHOT.jar", "http://localhost:8080/actuator/health"]
+      start_period: 10s
+      interval: 5s
     depends_on:
-      auth-server:
+      idp:
         condition: service_healthy
   client-app:
     image: acrlypfelles.azurecr.io/client-app:2.0.0-SNAPSHOT
     command:
       - --server.port=8080
-      - --spring.security.oauth2.client.provider.spring.issuer-uri=http://auth-server:8080
+      - --spring.security.oauth2.client.provider.spring.issuer-uri=http://idp:8080
       - --messages.base-uri=http://resource-server:8080
     healthcheck:
       test: ["CMD", "/layers/paketo-buildpacks_bellsoft-liberica/jdk/bin/java", "-jar", "/workspace/BOOT-INF/lib/healthcheck-client-2.0.0-SNAPSHOT.jar", "http://localhost:8080/actuator/health"]
+      start_period: 10s
+      interval: 5s
     depends_on:
       resource-server:
         condition: service_healthy
+  maven:
+    image: maven:3.9-eclipse-temurin-17-focal
+    volumes:
+      - ../:/workspace
+      - /home/maven/.m2:/home/maven/.m2:rw
+    working_dir: /workspace
+    command: ["mvn", "clean", "verify", "-P", "docker-compose", "-pl", "e2e-tests"]
+    depends_on:
+      client-app:
+        condition: service_healthy
+
+#    entrypoint: ["/bin/bash"]
+#    command: ["bash"]
