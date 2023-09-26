@@ -41,6 +41,7 @@ public class SecurityConfig {
             .authorizeExchange(authorize ->
                 authorize
                     .pathMatchers("/error/**", "/webjars/**", "/", "/index.html", "/favicon.ico", "/_next/**").permitAll()
+                    .pathMatchers("/actuator/**").permitAll()
                     .pathMatchers("/api/auth/**").permitAll()
                     .pathMatchers(HttpMethod.GET, "/authorized", "/authorized/**").permitAll()
                     .pathMatchers(HttpMethod.GET, "/api/quote").permitAll()

@@ -36,7 +36,7 @@ public class AppContainer implements AutoCloseable, Callable<CompletableFuture<A
             "IdP",
             "localhost",
             9000,
-            line -> line.contains("changed to ACCEPTING_TRAFFIC")
+            line -> line.contains("Tomcat started on port(s):")
         );
     }
 
