@@ -1,5 +1,6 @@
 package no.lyse.plattform.oauth2playground.e2e;
 
+import com.github.dockerjava.api.command.InspectContainerResponse;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 @Slf4j
 public class AllApps implements Startable {
@@ -50,18 +52,9 @@ public class AllApps implements Startable {
     }
 
     private GenericContainer<?> createClientApp(GenericContainer<?> idp, GenericContainer<?> resourceServer) {
-        // This wait strategy allows us to declare the containers locally, the mapped port is only available after the container is started
-        class ClientStartupCheckStrategy extends IsRunningStartupCheckStrategy {
-            @Override
-            public boolean waitUntilStartupSuccessful(GenericContainer<?> container) {
-                if (super.waitUntilStartupSuccessful(container)) {
-                    clientAppUri.complete(URI.create("http://" + container.getHost() + ":" + container.getMappedPort(8080)));
-                    return true;
-                }
-                return false;
-            }
-        }
-        return new GenericContainer<>(DockerImageName.parse("").withRegistry(containerRegistry).withRepository("client-app").withTag(imageTag))
+        // The mapped port is only available after the container is started
+        return new ClientAppContainer(DockerImageName.parse("").withRegistry(containerRegistry).withRepository("client-app").withTag(imageTag))
+            .withWhenStarted(c -> clientAppUri.complete(URI.create("http://" + c.getHost() + ":" + c.getMappedPort(8080)))) // This wait strategy allows us to declare the containers locally, the mapped port is only available after the container is started
             .waitingFor(Wait.forHttp("/actuator/health").forPort(8080).allowInsecure().forStatusCode(200))
             .withNetwork(network)
             .withNetworkAliases("client-app")
@@ -74,7 +67,6 @@ public class AllApps implements Startable {
                 "--spring.security.oauth2.client.registration.messaging-client-oidc.redirect-uri=http://client-app:8080/login/oauth2/code/{registrationId}"
             )
             .withLogConsumer(new Slf4jLogConsumer(log).withPrefix("CLI"))
-            .withStartupCheckStrategy(new ClientStartupCheckStrategy())
             ;
     }
 
@@ -105,15 +97,6 @@ public class AllApps implements Startable {
                 "--logging.level.org.springframework.security=TRACE"
             )
             .withLogConsumer(new Slf4jLogConsumer(log).withPrefix("IDP"));
-        /*
-            http://localhost:8080/login/oauth2/code/messaging-client-oidc,
-    http://localhost:8080/login/oauth2/code/messaging-client-authorization-code,
-    http://localhost:8080/authorized,
-    http://localhost:3000/login/oauth2/code/messaging-client-oidc,
-    http://localhost:3000/login/oauth2/code/messaging-client-authorization-code,
-    http://localhost:3000/authorized
-
-         */
     }
 
     @Override
@@ -129,5 +112,24 @@ public class AllApps implements Startable {
     @SneakyThrows
     public URI getClientAppUri() {
         return clientAppUri.get(10L, TimeUnit.SECONDS);
+    }
+
+    private static class ClientAppContainer extends GenericContainer<ClientAppContainer> {
+        private Consumer<ClientAppContainer> whenStarted;
+
+        public ClientAppContainer(DockerImageName dockerImageName) {
+            super(dockerImageName);
+        }
+
+        public GenericContainer<ClientAppContainer> withWhenStarted(Consumer<ClientAppContainer> whenStarted) {
+            this.whenStarted = whenStarted;
+            return this;
+        }
+        @Override
+        protected void containerIsStarted(InspectContainerResponse containerInfo) {
+            if (whenStarted != null) {
+                whenStarted.accept(this);
+            }
+        }
     }
 }
