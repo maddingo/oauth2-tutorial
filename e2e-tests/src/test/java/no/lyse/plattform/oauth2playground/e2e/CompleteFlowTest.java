@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.*;
 public class CompleteFlowTest {
 
     @Test
-    void loginWithDocker() {
+    void loginAndGetQuotes() {
         String releaseVersion = System.getProperty("release.version", "2.0.0-SNAPSHOT");
         String containerRegistry = System.getProperty("artifacts.server", "acrlypfelles.azurecr.io");
 
