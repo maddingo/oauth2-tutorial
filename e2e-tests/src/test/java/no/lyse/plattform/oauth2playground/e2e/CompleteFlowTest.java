@@ -34,7 +34,7 @@ import static org.hamcrest.Matchers.*;
 @Slf4j
 public class CompleteFlowTest {
 
-    boolean headless = Boolean.parseBoolean(System.getProperty("e2etest.headless", "false"));
+    boolean headless = Boolean.parseBoolean(System.getProperty("e2etest.headless", "true"));
 
     @Test
     void loginAndGetQuotes() throws Exception {
