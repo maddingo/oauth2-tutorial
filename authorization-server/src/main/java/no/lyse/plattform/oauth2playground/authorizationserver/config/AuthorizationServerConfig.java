@@ -5,6 +5,7 @@ import com.nimbusds.jose.jwk.KeyType;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import lombok.extern.slf4j.Slf4j;
 import no.lyse.plattform.oauth2playground.authorizationserver.jose.JwksUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,8 @@ import org.springframework.security.oauth2.server.authorization.settings.ClientS
 import org.springframework.security.oauth2.server.authorization.settings.ConfigurationSettingNames;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 
 import java.util.List;
 import java.util.Set;
@@ -36,6 +39,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Configuration(proxyBeanMethods = false)
+@Slf4j
 public class AuthorizationServerConfig {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -57,6 +61,7 @@ public class AuthorizationServerConfig {
     // @formatter:off
     @Bean
     public RegisteredClientRepository registeredClientRepository(@Value("${redirect.server-uris}") Set<String> redirectServerUris) {
+        log.info("redirectServerUris: {}", String.join(", ",redirectServerUris));
         RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
             .clientId("messaging-client")
             .clientSecret("{noop}secret")
@@ -101,5 +106,15 @@ public class AuthorizationServerConfig {
         return AuthorizationServerSettings.builder()
             .issuer(issuer)
             .build();
+    }
+
+    /**
+     * Needed after docker test.
+     */
+    @Bean
+    public HttpFirewall configureFirewall() {
+        StrictHttpFirewall strictHttpFirewall = new StrictHttpFirewall();
+        strictHttpFirewall.setAllowSemicolon(true);
+        return strictHttpFirewall;
     }
 }

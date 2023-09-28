@@ -2,7 +2,7 @@
 server:
   port: 9000
 
-debug: true
+#debug: true
 
 auth-server:
   issuer: 'http://auth-server:9000'
@@ -19,4 +19,4 @@ redirect:
 logging:
   level:
     root: info
-    org.springframework.security: debug
+ #   org.springframework.security: debug

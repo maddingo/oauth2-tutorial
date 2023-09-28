@@ -62,12 +62,12 @@
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>bootstrap</artifactId>
-            <version>5.2.3</version>
+            <version>5.3.1</version>
         </dependency>
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>jquery</artifactId>
-            <version>3.6.3</version>
+            <version>3.7.1</version>
         </dependency>
         <dependency>
             <groupId>jakarta.validation</groupId>
@@ -96,17 +96,30 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring.version}</version>
+                <configuration>
+                    <image>
+                        <!--suppress UnresolvedMavenProperty -->
+                        <name>${artifacts.server}/${project.artifactId}:${project.version}</name>
+                        <!--publish>${acr.publish}</publish-->
+                        <env>
+                            <BP_JVM_TYPE>JDK</BP_JVM_TYPE>
+                        </env>
+                    </image>
+                    <docker>
+                        <publishRegistry>
+                            <!--suppress UnresolvedMavenProperty -->
+                            <token>${env.ACR_TOKEN}</token>
+                        </publishRegistry>
+                    </docker>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>repackage</id>
-                        <phase>package</phase>
-                        <goals><goal>repackage</goal></goals>
-                    </execution>
-                    <execution>
-                        <id>docker-deploy</id>
-                        <phase>deploy</phase>
-                        <goals><goal>build-image-no-fork</goal></goals>
+                        <id>build-image</id>
+                        <goals>
+                            <goal>build-info</goal>
+                            <goal>repackage</goal>
+                            <goal>build-image</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
