@@ -64,7 +64,6 @@
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>3.1.2</version>
                 </plugin>
-
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
@@ -119,7 +118,6 @@
         <module>client-app</module>
         <module>quotes-api</module>
         <module>e2e-tests</module>
-        <module>healthcheck-client</module>
     </modules>
 
     <distributionManagement>
@@ -145,46 +143,4 @@
             </snapshots>
         </repository>
     </repositories>
-
-    <profiles>
-        <profile>
-            <id>docker-compose</id>
-            <activation>
-                <property>
-                    <name>env.RUNTIME_ENVIRONMENT</name>
-                    <value>docker</value>
-                </property>
-            </activation>
-            <properties>
-                <spring-boot.build-image.skip>true</spring-boot.build-image.skip>
-            </properties>
-            <!--build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.6.0</version>
-                        <executions>
-                            <execution>
-                                <id>install playwright browser</id>
-                                <goals><goal>java</goal></goals>
-                                <phase>pre-integration-test</phase>
-                                <configuration>
-                                    <mainClass>com.microsoft.playwright.CLI</mainClass>
-                                    <arguments>
-                                        <argument>install-deps</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-
-
-                    </plugin>
-                </plugins>
-            </build-->
-            <modules>
-                <module>e2e-tests</module>
-            </modules>
-        </profile>
-    </profiles>
 </project>

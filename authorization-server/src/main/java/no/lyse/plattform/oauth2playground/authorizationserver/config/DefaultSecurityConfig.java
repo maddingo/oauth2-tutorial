@@ -24,7 +24,7 @@ public class DefaultSecurityConfig {
         http
             .authorizeHttpRequests(authorize ->
                 authorize
-                    . requestMatchers("/actuator/**").permitAll()
+                    .requestMatchers("/actuator/**").permitAll()
                     .anyRequest().authenticated()
             )
             .formLogin(withDefaults());

@@ -71,7 +71,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>executable-jar</id>
+                        <id>build-image</id>
                         <goals>
                             <goal>build-info</goal>
                             <goal>repackage</goal>

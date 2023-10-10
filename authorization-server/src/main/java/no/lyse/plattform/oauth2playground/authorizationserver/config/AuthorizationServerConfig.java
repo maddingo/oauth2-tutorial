@@ -5,6 +5,7 @@ import com.nimbusds.jose.jwk.KeyType;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import lombok.extern.slf4j.Slf4j;
 import no.lyse.plattform.oauth2playground.authorizationserver.jose.JwksUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -38,6 +39,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Configuration(proxyBeanMethods = false)
+@Slf4j
 public class AuthorizationServerConfig {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -59,6 +61,7 @@ public class AuthorizationServerConfig {
     // @formatter:off
     @Bean
     public RegisteredClientRepository registeredClientRepository(@Value("${redirect.server-uris}") Set<String> redirectServerUris) {
+        log.info("redirectServerUris: {}", String.join(", ",redirectServerUris));
         RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
             .clientId("messaging-client")
             .clientSecret("{noop}secret")

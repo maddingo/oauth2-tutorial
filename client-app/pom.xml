@@ -70,11 +70,6 @@
             <version>3.7.1</version>
         </dependency>
         <dependency>
-            <groupId>no.lyse.plattform</groupId>
-            <artifactId>healthcheck-client</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
         </dependency>
@@ -119,7 +114,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>executable-jar</id>
+                        <id>build-image</id>
                         <goals>
                             <goal>build-info</goal>
                             <goal>repackage</goal>

@@ -57,11 +57,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>no.lyse.plattform</groupId>
-            <artifactId>healthcheck-client</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-test</artifactId>
             <scope>test</scope>
@@ -101,7 +96,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>executable-jar</id>
+                        <id>build-image</id>
                         <goals>
                             <goal>build-info</goal>
                             <goal>repackage</goal>
