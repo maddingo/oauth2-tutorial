@@ -60,6 +60,7 @@ public class ResourceServerConfig {
     }
 
     @Bean
+    @Profile("azure")
     public ReactiveJwtAuthenticationConverter getJwtAuthenticationConverter() {
         ReactiveJwtAuthenticationConverter converter = new ReactiveJwtAuthenticationConverter();
 
