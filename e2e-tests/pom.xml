@@ -14,8 +14,8 @@
     <properties>
         <deploy.skip>true</deploy.skip>
         <install.skip>true</install.skip>
-        <selenium.version>4.12.1</selenium.version>
-        <testcontainers.version>1.19.0</testcontainers.version>
+        <selenium.version>4.13.0</selenium.version>
+        <testcontainers.version>1.19.1</testcontainers.version>
     </properties>
 
     <dependencyManagement>
@@ -49,6 +49,11 @@
                 <groupId>org.testcontainers</groupId>
                 <artifactId>selenium</artifactId>
                 <version>${testcontainers.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-api</artifactId>
+                <version>${selenium.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
@@ -100,19 +105,16 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
-            <version>1.19.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>selenium</artifactId>
-            <version>1.19.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-chrome-driver</artifactId>
-            <version>4.12.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
