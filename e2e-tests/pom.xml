@@ -14,12 +14,19 @@
     <properties>
         <deploy.skip>true</deploy.skip>
         <install.skip>true</install.skip>
-        <selenium.version>4.13.0</selenium.version>
+        <selenium.version>4.14.1</selenium.version>
         <testcontainers.version>1.19.1</testcontainers.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${testcontainers.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>no.lyse.plattform.oauth2-playground</groupId>
                 <artifactId>authorization-server</artifactId>
@@ -36,23 +43,23 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.microsoft.playwright</groupId>
-                <artifactId>playwright</artifactId>
-                <version>1.36.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>testcontainers</artifactId>
-                <version>${testcontainers.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>selenium</artifactId>
-                <version>${testcontainers.version}</version>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-api</artifactId>
+                <version>${selenium.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
-                <artifactId>selenium-api</artifactId>
+                <artifactId>selenium-manager</artifactId>
+                <version>${selenium.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-java</artifactId>
+                <version>${selenium.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-http</artifactId>
                 <version>${selenium.version}</version>
             </dependency>
             <dependency>
@@ -64,6 +71,46 @@
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-chrome-driver</artifactId>
                 <version>${selenium.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-chromium-driver</artifactId>
+                <version>${selenium.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-json</artifactId>
+                <version>${selenium.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.bonigarcia</groupId>
+                <artifactId>webdrivermanager</artifactId>
+                <version>5.5.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>1.24.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>oauth2-oidc-sdk</artifactId>
+                <version>10.7.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>nimbus-jose-jwt</artifactId>
+                <version>${nimbus.jose.jwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna-platform</artifactId>
+                <version>5.13.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>msal4j</artifactId>
+                <version>1.13.8</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -110,6 +157,16 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>selenium</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-manager</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
