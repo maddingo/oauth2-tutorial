@@ -116,6 +116,10 @@
     </dependencyManagement>
     <dependencies>
         <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
             <groupId>no.lyse.plattform.oauth2-playground</groupId>
             <artifactId>authorization-server</artifactId>
             <version>${project.version}</version>
