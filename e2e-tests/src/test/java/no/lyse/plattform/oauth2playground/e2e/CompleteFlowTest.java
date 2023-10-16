@@ -1,5 +1,6 @@
 package no.lyse.plattform.oauth2playground.e2e;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.MatcherAssert;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -33,12 +35,26 @@ public class CompleteFlowTest {
             apps.start();
             URI clientAppUri = apps.getClientAppUri();
             URI idpUri = URI.create("http://idp:8080");
-            runSeleniumTest(clientAppUri, idpUri, apps.getNetwork());
+            runSeleniumTest(apps.getNetwork());
         }
     }
 
+    @Test
+    void runLocalSeleniumTest() {
+        if (!Boolean.getBoolean("selenium.local")) {
+            log.info("Skipping local selenium test");
+            return;
+        }
+        WebDriverManager.chromedriver().setup();
+        WebDriver driver = ChromeDriver.builder()
+            .oneOf(new ChromeOptions())
+            .build();
+
+        runSeleniumTest(driver, "http://client-app:8080", "http://idp:9000");
+    }
+
     @SneakyThrows
-    private void runSeleniumTest(URI clientAppUri, URI idpUri, Network network) {
+    private void runSeleniumTest(Network network) {
         Path recordingPath = Path.of("target", "recordings").toAbsolutePath();
         Files.createDirectories(recordingPath);
         try (
@@ -56,36 +72,40 @@ public class CompleteFlowTest {
                 .config(ClientConfig.defaultConfig())
                 .build();
 
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30L));
-
-            driver.get("http://client-app:8080");
-            MatcherAssert.assertThat(driver.findElements(By.tagName("h2")), allOf(
-                hasSize(1),
-                everyItem(
-                    hasProperty("text", startsWith("Arthur Schramm"))
-                )
-            ));
-
-            driver.findElement(By.linkText("Sign In")).click();
-            MatcherAssert.assertThat(driver.getCurrentUrl(), startsWith("http://idp:8080/login"));
-            driver.findElement(By.name("username")).sendKeys("user1");
-            driver.findElement(By.name("password")).sendKeys("password");
-            driver.findElement(By.cssSelector("button[type=\"submit\"]")).click();
-            MatcherAssert.assertThat(driver.getCurrentUrl(), startsWith("http://idp:8080/oauth2/authorize"));
-            check(driver.findElement(By.id("profile")));
-            check(driver.findElement(By.id("message.read")));
-            check(driver.findElement(By.id("message.write")));
-            driver.findElement(By.cssSelector("button[type=\"submit\"]")).click();
-
-            MatcherAssert.assertThat(driver.getCurrentUrl(), startsWith("http://client-app:8080"));
-
-            // we wait for the refresh button, because the panel is dynamically loaded
-            driver.findElement(By.xpath("//button[text()=\"Refresh\"]")).isDisplayed();
-            MatcherAssert.assertThat(driver.findElements(By.tagName("h2")), allOf(
-                hasSize(2),
-                everyItem(hasProperty("text", startsWith("Arthur Schramm")))
-            ));
+            runSeleniumTest(driver, "http://client-app:8080", "http://idp:8080");
         }
+    }
+
+    private void runSeleniumTest(WebDriver driver, String clientAppUrl, String idpBaseUrl) {
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30L));
+
+        driver.get(clientAppUrl);
+        MatcherAssert.assertThat(driver.findElements(By.tagName("h2")), allOf(
+            hasSize(1),
+            everyItem(
+                hasProperty("text", startsWith("Arthur Schramm"))
+            )
+        ));
+
+        driver.findElement(By.linkText("Sign In")).click();
+        MatcherAssert.assertThat(driver.getCurrentUrl(), startsWith(idpBaseUrl + "/login"));
+        driver.findElement(By.name("username")).sendKeys("user1");
+        driver.findElement(By.name("password")).sendKeys("password");
+        driver.findElement(By.cssSelector("button[type=\"submit\"]")).click();
+        MatcherAssert.assertThat(driver.getCurrentUrl(), startsWith(idpBaseUrl + "/oauth2/authorize"));
+        check(driver.findElement(By.id("profile")));
+        check(driver.findElement(By.id("message.read")));
+        check(driver.findElement(By.id("message.write")));
+        driver.findElement(By.cssSelector("button[type=\"submit\"]")).click();
+
+        MatcherAssert.assertThat(driver.getCurrentUrl(), startsWith(clientAppUrl));
+
+        // we wait for the refresh button, because the panel is dynamically loaded
+        driver.findElement(By.xpath("//button[text()=\"Refresh\"]")).isDisplayed();
+        MatcherAssert.assertThat(driver.findElements(By.tagName("h2")), allOf(
+            hasSize(2),
+            everyItem(hasProperty("text", startsWith("Arthur Schramm")))
+        ));
     }
 
     private void check(WebElement element) {

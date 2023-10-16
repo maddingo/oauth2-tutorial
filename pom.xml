@@ -13,7 +13,7 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <spring.version>3.1.3</spring.version>
+        <spring.version>3.1.4</spring.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.plugin.validation>VERBOSE</maven.plugin.validation>
@@ -22,6 +22,7 @@
         <!--spring-boot.build-image.imageName>${docker.image.registry}/${project.groupId}/${project.artifactId}:${project.version}</spring-boot.build-image.imageName-->
         <maven.deploy.skip>true</maven.deploy.skip> <!-- skip maven deploy in favor of docker push -->
         <artifacts.server>acrlypfelles.azurecr.io</artifacts.server>
+        <nimbus.jose.jwt.version>9.31</nimbus.jose.jwt.version>
     </properties>
 
     <dependencyManagement>
@@ -77,7 +78,7 @@
                 <plugin>
                     <groupId>org.openapitools</groupId>
                     <artifactId>openapi-generator-maven-plugin</artifactId>
-                    <version>7.0.0-beta</version>
+                    <version>7.0.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -89,13 +90,27 @@
                     <artifactId>exec-maven-plugin</artifactId>
                     <version>3.1.0</version>
                 </plugin>
+                <plugin>
+                    <groupId>com.amashchenko.maven.plugin</groupId>
+                    <artifactId>gitflow-maven-plugin</artifactId>
+                    <version>1.19.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.4.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring.version}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>com.amashchenko.maven.plugin</groupId>
                 <artifactId>gitflow-maven-plugin</artifactId>
-                <version>1.19.0</version>
                 <configuration>
                     <pushRemote>true</pushRemote>
                     <!-- we use major.minor.patch versioning, being 0.1.2 respectively.
@@ -109,6 +124,23 @@
                         <developmentBranch>develop</developmentBranch>
                     </gitFlowConfig>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce</id>
+                        <configuration>
+                            <rules>
+                                <dependencyConvergence/>
+                            </rules>
+                        </configuration>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

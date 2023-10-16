@@ -5,7 +5,7 @@ server:
 #debug: true
 
 auth-server:
-  issuer: 'http://auth-server:9000'
+  issuer: 'http://idp:9000'
 
 redirect:
   server-uris: |-

@@ -19,6 +19,8 @@ Running the Resource Server and the Client Application requires a running Author
 
 Run the Script `start-apps.sh` to start all 3 servers.
 
+The resource-server must be run with the `azure` profile.
+
 ## Deploy to local Maven Repository
 ```shell
 mvn clean deploy -DaltDeploymentRepository=local::file://${HOME}/tmp/maven-local -Dspring-boot.build-image.skip=true -Dmaven.deploy.skip=false

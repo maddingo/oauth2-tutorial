@@ -1,0 +1,71 @@
+
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      buildtype:
+        description: 'Build type'
+        required: true
+        default: 'minor'
+        type: choice
+        options:
+          - major
+          - minor
+
+concurrency: release
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: azure/login@v1
+        name: 'Az CLI login'
+        with: # using credentials for az-spn-acrpush-voipcrypt
+          creds: ${{ secrets.AZ_SPN_LYP_ACRPUSH }}
+      - name: 'ACR login'
+        run: |
+          az acr login --name acrlypfelles
+          echo ACR_TOKEN=`cat ~/.docker/config.json | jq -r '."auths"."acrlypfelles.azurecr.io"."identitytoken"'` >> $GITHUB_ENV
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          # cache: 'maven'
+      - name: Show Maven Version before install
+        run: mvn --version
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Check build type
+        run: |
+          case ${{ inputs.buildtype }} in
+            major)
+              echo 'RELEASE_DIGIT=0' >> $GITHUB_ENV
+              ;;
+            *)
+              echo 'RELEASE_DIGIT=1' >> $GITHUB_ENV
+              ;;
+          esac
+      - name: Release
+        run: |
+          git config --global user.name "Github Actions"
+          git config --global user.email "github.actions@plattform.lyse.no"
+          mvn -B gitflow:release -DgitflowDigitToIncrement=$RELEASE_DIGIT
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Build and Deploy release
+        run: |
+          git switch main
+          mvn -B deploy -Dspring-boot.build-image.publish=true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
