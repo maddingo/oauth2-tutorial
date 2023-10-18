@@ -105,7 +105,7 @@
                     <image>
                         <!--suppress UnresolvedMavenProperty -->
                         <name>${artifacts.server}/${project.groupId}.${project.artifactId}:${project.version}</name>
-                        <!--publish>${acr.publish}</publish-->
+                        <publish>${acr.publish}</publish>
                         <env>
                             <BP_JVM_TYPE>JDK</BP_JVM_TYPE>
                         </env>
