@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resource-server
+  namespace: reference-implementation
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: resource-server
+  template:
+    metadata:
+      labels:
+        app: resource-server
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+        - name: resource-server
+          image: acrlypfelles.azurecr.io/resource-server:2.0.0-SNAPSHOT
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: azure,dev
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: '1'
+              memory: 1G
+            limits:
+              memory: 1G

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-app
+  namespace: reference-implementation
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: client-app
+  template:
+    metadata:
+      labels:
+        app: client-app
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+        - name: client-app
+          image: acrlypfelles.azurecr.io/client-app:2.0.0-SNAPSHOT
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: azure,dev
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: '1'
+              memory: 1G
+            limits:
+              memory: 1G

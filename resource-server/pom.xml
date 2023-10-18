@@ -96,7 +96,7 @@
                 <configuration>
                     <image>
                         <!--suppress UnresolvedMavenProperty -->
-                        <name>${artifacts.server}/${project.artifactId}:${project.version}</name>
+                        <name>${artifacts.server}/${project.groupId}.${project.artifactId}:${project.version}</name>
                         <!--publish>${acr.publish}</publish-->
                         <env>
                             <BP_JVM_TYPE>JDK</BP_JVM_TYPE>
