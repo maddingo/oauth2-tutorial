@@ -53,7 +53,7 @@ public class AllApps implements Startable {
 
     private GenericContainer<?> createClientApp(GenericContainer<?> idp, GenericContainer<?> resourceServer) {
         // The mapped port is only available after the container is started
-        return new ClientAppContainer(DockerImageName.parse("").withRegistry(containerRegistry).withRepository("client-app").withTag(imageTag))
+        return new ClientAppContainer(DockerImageName.parse("").withRegistry(containerRegistry).withRepository("no.lyse.plattform.oauth2-playground.client-app").withTag(imageTag))
             .withWhenStarted(c -> clientAppUri.complete(URI.create("http://" + c.getHost() + ":" + c.getMappedPort(8080)))) // This wait strategy allows us to declare the containers locally, the mapped port is only available after the container is started
             .waitingFor(Wait.forHttp("/actuator/health").forPort(8080).allowInsecure().forStatusCode(200))
             .withNetwork(network)
@@ -71,7 +71,7 @@ public class AllApps implements Startable {
     }
 
     private GenericContainer<?> createResourceServer(GenericContainer<?> idp) {
-        return new GenericContainer<>(DockerImageName.parse("").withRegistry(containerRegistry).withRepository("resource-server").withTag(imageTag))
+        return new GenericContainer<>(DockerImageName.parse("").withRegistry(containerRegistry).withRepository("no.lyse.plattform.oauth2-playground.resource-server").withTag(imageTag))
             .waitingFor(Wait.forHttp("/actuator/health").forPort(8080).allowInsecure().forStatusCode(200))
             .withNetwork(network)
             .withNetworkAliases("resource-server")
@@ -85,7 +85,7 @@ public class AllApps implements Startable {
     }
 
     private GenericContainer<?> createIdp() {
-        return new GenericContainer<>(DockerImageName.parse("").withRegistry(containerRegistry).withRepository("authorization-server").withTag(imageTag))
+        return new GenericContainer<>(DockerImageName.parse("").withRegistry(containerRegistry).withRepository("no.lyse.plattform.oauth2-playground.authorization-server").withTag(imageTag))
             .waitingFor(Wait.forHttp("/actuator/health").forPort(8080).allowInsecure().forStatusCode(200))
             .withNetwork(network)
             .withNetworkAliases("idp")
