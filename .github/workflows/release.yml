@@ -27,12 +27,13 @@ jobs:
           fetch-depth: 0
       - uses: azure/login@v1
         name: 'Az CLI login'
-        with: # using credentials for az-spn-acrpush-voipcrypt
+        with:
           creds: ${{ secrets.AZ_SPN_LYP_ACRPUSH }}
-      - name: 'ACR login'
-        run: |
-          az acr login --name acrlypfelles
-          echo ACR_TOKEN=`cat ~/.docker/config.json | jq -r '."auths"."acrlypfelles.azurecr.io"."identitytoken"'` >> $GITHUB_ENV
+      - name: 'Fetch ACR Token'
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            echo ACR_TOKEN=$(az acr login --name acrypfelles --expose-token | jq -r .accessToken) >> $GITHUB_ENV
       - uses: actions/setup-java@v3
         with:
           java-version: '17'
