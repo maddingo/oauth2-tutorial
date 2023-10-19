@@ -33,7 +33,7 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            echo ACR_TOKEN=$(az acr login --name acrypfelles --expose-token | jq -r .accessToken) >> $GITHUB_ENV
+            echo ACR_TOKEN=$(az acr login --name acrlypfelles --expose-token | jq -r .accessToken) >> $GITHUB_ENV
       - uses: actions/setup-java@v3
         with:
           java-version: '17'
