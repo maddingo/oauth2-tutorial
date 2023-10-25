@@ -20,7 +20,7 @@ spec:
           image: acrlypfelles.azurecr.io/no.lyse.plattform.oauth2-playground.resource-server:2.0.0-SNAPSHOT
           args:
             - --spring.profiles.active=azure,dev
-            - --spring.security.oauth2.resourceserver.jwt.issuer-uri=https://login.microsoftonline.com/lypfelles.onmicrosoft.com/v2.0
+            - --spring.security.oauth2.resourceserver.jwt.issuer-uri=https://login.microsoftonline.com/22ca942f-06c2-4f38-9407-0e447dedbb67/v2.0
             - --server.port=8080
           ports:
             - containerPort: 8080
