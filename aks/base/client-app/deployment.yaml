@@ -4,7 +4,7 @@ metadata:
   name: client-app
   namespace: reference-implementation
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: client-app
@@ -17,7 +17,7 @@ spec:
         kubernetes.io/os: linux
       containers:
         - name: client-app
-          image: acrlypfelles.azurecr.io/client-app:2.0.0-SNAPSHOT
+          image: acrlypfelles.azurecr.io/no.lyse.plattform.oauth2-playground.client-app:2.0.0-SNAPSHOT
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: azure,dev

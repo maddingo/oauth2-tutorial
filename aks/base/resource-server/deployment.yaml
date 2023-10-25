@@ -4,7 +4,7 @@ metadata:
   name: resource-server
   namespace: reference-implementation
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: resource-server
@@ -17,10 +17,11 @@ spec:
         kubernetes.io/os: linux
       containers:
         - name: resource-server
-          image: acrlypfelles.azurecr.io/resource-server:2.0.0-SNAPSHOT
-          env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: azure,dev
+          image: acrlypfelles.azurecr.io/no.lyse.plattform.oauth2-playground.resource-server:2.0.0-SNAPSHOT
+          args:
+            - --spring.profiles.active=azure,dev
+            - --spring.security.oauth2.resourceserver.jwt.issuer-uri=https://login.microsoftonline.com/lypfelles.onmicrosoft.com/v2.0
+            - --server.port=8080
           ports:
             - containerPort: 8080
           resources:
