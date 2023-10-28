@@ -1,8 +1,6 @@
 package no.lyse.plattform.oauth2playground.authorizationserver.config;
 
 import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.KeyType;
-import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +12,6 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -35,8 +32,8 @@ import org.springframework.security.web.firewall.StrictHttpFirewall;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration(proxyBeanMethods = false)
 @Slf4j
@@ -46,14 +43,14 @@ public class AuthorizationServerConfig {
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-            .oidc(Customizer.withDefaults());	// Enable OpenID Connect 1.0
+            .oidc(withDefaults());	// Enable OpenID Connect 1.0
 
         // @formatter:off
         http
             .exceptionHandling(exceptions ->
                 exceptions.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
             )
-            .oauth2ResourceServer(config -> config.jwt(Customizer.withDefaults()));
+            .oauth2ResourceServer(config -> config.jwt(withDefaults()));
         // @formatter:on
         return http.build();
     }
