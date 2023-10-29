@@ -6,6 +6,11 @@ server:
 
 auth-server:
   issuer: 'http://idp:9000'
+  users:
+    - username: "user1"
+      password: "{noop}password"
+      roles:
+        - "USER"
 
 spring:
   security:
@@ -37,15 +42,6 @@ spring:
                 - "message.read"
                 - "message.write"
             require-authorization-consent: true
-
-redirect:
-  server-uris: |-
-    http://localhost:8080/login/oauth2/code/messaging-client-oidc,
-    http://localhost:8080/login/oauth2/code/messaging-client-authorization-code,
-    http://localhost:8080/authorized,
-    http://localhost:3000/login/oauth2/code/messaging-client-oidc,
-    http://localhost:3000/login/oauth2/code/messaging-client-authorization-code,
-    http://localhost:3000/authorized
 
 logging:
   level:

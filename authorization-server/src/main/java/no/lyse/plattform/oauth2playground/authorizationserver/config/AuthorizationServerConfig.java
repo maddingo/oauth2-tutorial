@@ -5,7 +5,6 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import lombok.extern.slf4j.Slf4j;
 import no.lyse.plattform.oauth2playground.authorizationserver.jose.JwksUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -27,6 +26,14 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration(proxyBeanMethods = false)
 @Slf4j
 public class AuthorizationServerConfig {
+
+    private final AuthServerConfigProperties authServerConfigProperties;
+
+    public AuthorizationServerConfig(AuthServerConfigProperties authServerConfigProperties) {
+        this.authServerConfigProperties = authServerConfigProperties;
+    }
+
+
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -60,9 +67,9 @@ public class AuthorizationServerConfig {
     }
 
     @Bean
-    public AuthorizationServerSettings authorizationServerSettings(@Value("${auth-server.issuer}") String issuer) {
+    public AuthorizationServerSettings authorizationServerSettings() {
         return AuthorizationServerSettings.builder()
-            .issuer(issuer)
+            .issuer(authServerConfigProperties.getIssuer())
             .build();
     }
 

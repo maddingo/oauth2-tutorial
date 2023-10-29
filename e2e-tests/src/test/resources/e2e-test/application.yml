@@ -6,6 +6,11 @@ server:
 
 auth-server:
   issuer: 'http://idp:8080'
+  users:
+    - username: "user1"
+      password: "{noop}password"
+      roles:
+        - "USER"
 
 spring:
   security:
