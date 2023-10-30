@@ -28,3 +28,5 @@ jobs:
 
     steps:
     - uses: 'Lyse-AS/lyse-build-java-composite-action@develop'
+      with:
+        acr-credentials: ${{ secrets.AZ_SPN_LYP_ACRPUSH }}
