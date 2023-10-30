@@ -18,6 +18,13 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 @Configuration(proxyBeanMethods = false)
 public class DefaultSecurityConfig {
+
+    private final AuthServerConfigProperties authServerConfigProperties;
+
+    public DefaultSecurityConfig(AuthServerConfigProperties authServerConfigProperties) {
+        this.authServerConfigProperties = authServerConfigProperties;
+    }
+
     // @formatter:off
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -35,12 +42,19 @@ public class DefaultSecurityConfig {
     // @formatter:off
     @Bean
     UserDetailsService users() {
-        UserDetails user = User.builder()
-            .username("user1")
-            .password("{noop}password")
-            .roles("USER")
-            .build();
-        return new InMemoryUserDetailsManager(user);
+        InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
+
+        authServerConfigProperties.getUsers()
+            .forEach(userConfig ->
+                inMemoryUserDetailsManager.createUser(
+                    User.builder()
+                        .username(userConfig.getUsername())
+                        .password(userConfig.getPassword())
+                        .roles(userConfig.getRoles())
+                        .build()
+                )
+            );
+        return inMemoryUserDetailsManager;
     }
     // @formatter:on
 
