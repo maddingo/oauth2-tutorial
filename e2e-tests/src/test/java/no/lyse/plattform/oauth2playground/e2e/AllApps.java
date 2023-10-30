@@ -4,6 +4,7 @@ import com.github.dockerjava.api.command.InspectContainerResponse;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
@@ -90,10 +91,8 @@ public class AllApps implements Startable {
             .withNetwork(network)
             .withNetworkAliases("idp")
             .withExposedPorts(8080)
+            .withClasspathResourceMapping("/e2e-test/application.yml", "/workspace/config/application.yml", BindMode.READ_ONLY)
             .withCommand(
-                "--auth-server.issuer=http://idp:8080",
-                "--server.port=8080",
-                "--redirect.server-uris=http://browser:8080/login/oauth2/code/messaging-client-oidc,http://browser:8080/login/oauth2/code/messaging-authorization-code,http://browser:8080/authroized,http://client-app:8080/login/oauth2/code/messaging-client-oidc,http://client-app:8080/login/oauth2/code/messaging-authorization-code,http://client-app:8080/authroized",
                 "--logging.level.org.springframework.security=TRACE"
             )
             .withLogConsumer(new Slf4jLogConsumer(log).withPrefix("IDP"));

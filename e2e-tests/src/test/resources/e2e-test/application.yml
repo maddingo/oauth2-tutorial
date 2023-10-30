@@ -1,11 +1,11 @@
 
 server:
-  port: 9000
+  port: 8080
 
 #debug: true
 
 auth-server:
-  issuer: 'http://idp:9000'
+  issuer: 'http://idp:8080'
   users:
     - username: "user1"
       password: "{noop}password"
@@ -28,12 +28,9 @@ spring:
                 - "refresh_token"
                 - "client_credentials"
               redirect-uris:
-                - "http://localhost:8080/login/oauth2/code/messaging-client-oidc"
-                - "http://localhost:8080/login/oauth2/code/messaging-client-authorization-code"
-                - "http://localhost:8080/authorized"
-                - "http://localhost:3000/login/oauth2/code/messaging-client-oidc"
-                - "http://localhost:3000/login/oauth2/code/messaging-client-authorization-code"
-                - "http://localhost:3000/authorized"
+                - "http://client-app:8080/login/oauth2/code/messaging-client-oidc"
+                - "http://client-app:8080/login/oauth2/code/messaging-client-authorization-code"
+                - "http://client-app:8080/authorized"
 #              post-logout-redirect-uris:
 #                - "http://127.0.0.1:8080/"
               scopes:
@@ -46,4 +43,4 @@ spring:
 logging:
   level:
     root: info
- #   org.springframework.security: debug
+  #   org.springframework.security: debug
