@@ -58,17 +58,25 @@ jobs:
           # Prefix the list here with "+" to use these queries and those in the config file.
 
           # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
-          # queries: security-extended,security-and-quality
+          queries: security-extended,security-and-quality
 
       - name: 'Setup Java ${{ inputs.java-version }}'
         uses: 'actions/setup-java@v3'
         with:
           java-version: '17'
           distribution: 'temurin'
+      - name: 'Setup Cache'
+        uses: 'actions/cache@v3'
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
 
-      - run: |
-          echo "Run, Build Application using script"
-          mvn install -Dacr.publish=false
+      - name: "Build withj Maven"
+        id: build
+        shell: 'bash'
+        run: 'mvn -B install -Dacr.publish=false -DskipTests=true'
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
