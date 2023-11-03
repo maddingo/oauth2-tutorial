@@ -32,8 +32,9 @@ public class AuthorizationController {
 
     @GetMapping(value = "/authorize")
     public Mono<ResponseEntity<Void>> authorizationCodeGrant(ServerWebExchange exchange) {
-
-        return Mono.just(ResponseEntity.ok().build());
+        return exchange.getPrincipal()
+            .doOnNext(principal -> log.info("authorize {}", principal.getName()))
+            .map(principal -> ResponseEntity.ok().build());
     }
 
 //    @GetMapping(value = "/authorize", params = "grant_type=authorization_code")
