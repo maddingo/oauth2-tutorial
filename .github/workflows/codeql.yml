@@ -63,7 +63,7 @@ jobs:
       - name: 'Setup Java ${{ inputs.java-version }}'
         uses: 'actions/setup-java@v3'
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
       - name: 'Setup Cache'
         uses: 'actions/cache@v3'
@@ -73,7 +73,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: "Build withj Maven"
+      - name: "Build with Maven"
         id: build
         shell: 'bash'
         run: 'mvn -B install -Dacr.publish=false -DskipTests=true -Dspring-boot.build-image.skip=true'

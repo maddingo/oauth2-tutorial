@@ -34,3 +34,4 @@ jobs:
     - uses: 'Lyse-AS/lyse-build-java-composite-action@develop'
       with:
         acr-credentials: ${{ secrets.AZ_SPN_LYP_ACRPUSH }}
+        java-version: '21'

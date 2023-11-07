@@ -36,7 +36,7 @@ jobs:
             echo ACR_TOKEN=$(az acr login --name acrlypfelles --expose-token | jq -r .accessToken) >> $GITHUB_ENV
       - uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
           # cache: 'maven'
       - name: Show Maven Version before install
