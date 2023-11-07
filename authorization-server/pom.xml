@@ -51,6 +51,7 @@
                         <publish>${acr.publish}</publish>
                         <env>
                             <BP_JVM_TYPE>JDK</BP_JVM_TYPE>
+                            <BP_JVM_VERSION>${maven.compiler.target}</BP_JVM_VERSION>
                         </env>
                     </image>
                     <docker>
