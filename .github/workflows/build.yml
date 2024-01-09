@@ -25,6 +25,8 @@ jobs:
     permissions:
       contents: write
       packages: write
+      id-token: write # https://stackoverflow.com/questions/72504998/github-actions-unable-to-get-actions-id-token-request-url-env-variable
+      pull-requests: write
 
     steps:
     - shell: bash
@@ -33,5 +35,7 @@ jobs:
         env
     - uses: 'Lyse-AS/lyse-build-java-composite-action@develop'
       with:
-        acr-credentials: ${{ secrets.AZ_SPN_LYP_ACRPUSH }}
         java-version: '21'
+        az-client-id: ${{ secrets.AZ_SPN_LYP_ACRPUSH_ID }}
+        az-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        az-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_LYP_FELLES_PROD }}
