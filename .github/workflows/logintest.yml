@@ -1,0 +1,36 @@
+name: 'Login Test'
+
+on:
+  push:
+    branches:
+      - "develop"
+      - "main"
+  pull_request:
+    branches:
+      - "develop"
+      - "main"
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      id-token: write # https://stackoverflow.com/questions/72504998/github-actions-unable-to-get-actions-id-token-request-url-env-variable
+      pull-requests: write
+
+    steps:
+      - uses: azure/login@v1
+        name: 'Az CLI login'
+        with:
+          client-id: ${{ secrets.AZ_SPN_LYP_ACRPUSH_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_LYP_FELLES_PROD }}
+      - name: 'Fetch ACR Token'
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            echo ACR_TOKEN=$(az acr login --name acrlypfelles --expose-token | jq -r .accessToken) >> $GITHUB_ENV
+            cat $GITHUB_ENV | grep ACR_TOKEN | cut -c1-20  
+
