@@ -33,3 +33,5 @@ jobs:
         az-client-id: ${{ secrets.AZ_SPN_LYP_ACRPUSH_ID }}
         az-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         az-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_LYP_FELLES_PROD }}
+      env:
+        ACTIONS_ID_TOKEN_REQUEST_URL: ${{ secrets.ACTIONS_ID_TOKEN_REQUEST_URL }}
