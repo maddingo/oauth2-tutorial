@@ -26,7 +26,7 @@ jobs:
       contents: write
       packages: write
       id-token: write # https://stackoverflow.com/questions/72504998/github-actions-unable-to-get-actions-id-token-request-url-env-variable
-      pull-requests: read
+      pull-requests: write
 
     steps:
     - uses: 'Lyse-AS/lyse-build-java-composite-action@develop'
