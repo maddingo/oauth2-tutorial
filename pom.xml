@@ -42,7 +42,7 @@
     </dependencyManagement>
 
     <build>
-        <defaultGoal>verify</defaultGoal>
+        <defaultGoal>deploy</defaultGoal>
         <pluginManagement>
             <plugins>
                 <plugin>
