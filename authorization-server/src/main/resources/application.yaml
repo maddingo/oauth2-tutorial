@@ -2,7 +2,7 @@
 server:
   port: 9000
 
-#debug: true
+debug: true
 
 auth-server:
   issuer: 'http://idp:9000'
@@ -31,11 +31,14 @@ spring:
                 - "http://localhost:8080/login/oauth2/code/messaging-client-oidc"
                 - "http://localhost:8080/login/oauth2/code/messaging-client-authorization-code"
                 - "http://localhost:8080/authorized"
+                - "http://client-app:8080/login/oauth2/code/messaging-client-oidc"
+                - "http://client-app:8080/login/oauth2/code/messaging-client-authorization-code"
+                - "http://client-app:8080/authorized"
                 - "http://localhost:3000/login/oauth2/code/messaging-client-oidc"
                 - "http://localhost:3000/login/oauth2/code/messaging-client-authorization-code"
                 - "http://localhost:3000/authorized"
-#              post-logout-redirect-uris:
-#                - "http://127.0.0.1:8080/"
+              post-logout-redirect-uris:
+                - "http://client-app:8080/"
               scopes:
                 - "openid"
                 - "profile"
