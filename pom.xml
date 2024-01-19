@@ -44,6 +44,12 @@
                 <artifactId>spring-cloud-azure-starter-active-directory</artifactId>
                 <version>${azure.spring.starter.version}</version>
             </dependency>
+            <dependency>
+                <!-- version conflict -->
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna</artifactId>
+                <version>5.14.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
