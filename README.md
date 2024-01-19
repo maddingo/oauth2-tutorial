@@ -8,10 +8,10 @@ This project runs 3 servers:
 The code originates from https://github.com/spring-projects/spring-authorization-server/tree/main/samples with some slight modifications.
 
 # Authorization Code Flow
-![Authorization Code Flow](https://plantuml-dev.snartibox.net/proxy?fmt=svg&cache=no&src=https://raw.githubusercontent.com/Lyse-AS/lyp-reference-implementation/develop/doc/pkce.puml?token=GHSAT0AAAAAACMJ5WYD5J4O6U4ZVKSS47S6ZNKRRXQ)
+![Authorization Code Flow](doc/pkce.svg)
 
 # Client Credential Flow
-![Client Secret Flow](https://plantuml-dev.snartibox.net/proxy?fmt=svg&cache=no&src=https://raw.githubusercontent.com/Lyse-AS/lyp-reference-implementation/develop/doc/client-credentials.puml?token=GHSAT0AAAAAACMJ5WYC5NBIDUJ5ZESCWVRMZNKRUNA)
+![Client Secret Flow](doc/client-credentials.svg)
 
 
 # Development
@@ -32,8 +32,7 @@ See: https://developer.okta.com/blog/2022/06/17/simple-crud-react-and-spring-boo
 
 ### Run the application on Azure
 1. Create a service account in Azure AD `id-lyp-refimp-id`
-2. 
-2. 
+
 ```bash
 cd aks
 ../connect-to-cluser.sh
