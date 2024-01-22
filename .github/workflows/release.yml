@@ -11,12 +11,18 @@ on:
         options:
           - major
           - minor
+          - patch
+
+  pull_request:
+    types:
+      - closed
+
 
 concurrency: release
 
 jobs:
   release:
-    if: github.ref == 'refs/heads/develop'
+    if: github.ref == 'refs/heads/develop' || contains(toJSON(github.head_ref), 'release/')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -39,31 +45,28 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           # cache: 'maven'
-      - name: Show Maven Version before install
-        run: mvn --version
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - name: Check build type
-        run: |
-          case ${{ inputs.buildtype }} in
-            major)
-              echo 'RELEASE_DIGIT=0' >> $GITHUB_ENV
-              ;;
-            *)
-              echo 'RELEASE_DIGIT=1' >> $GITHUB_ENV
-              ;;
-          esac
-      - name: Release
-        run: |
-          git config --global user.name "Github Actions"
-          git config --global user.email "github.actions@plattform.lyse.no"
-          mvn -B gitflow:release -DgitflowDigitToIncrement=$RELEASE_DIGIT
+      - name: 'Generate versions'
+        id: version
+        uses: 'Lyse-AS/lyse-version-action@develop'
+        with:
+          increment: ${{ inputs.buildtype }}
+          project-type: maven
+
+      - name: gitflow-workflow-action release workflows
+        uses: Lyse-AS/lt-gitflow-workflow-action@0.0.103
+        with:
+          develop_branch: "develop"
+          main_branch: "main"
+          version: ${{ steps.version.outputs.new-version }}
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build and Deploy release
         run: |
           git switch main

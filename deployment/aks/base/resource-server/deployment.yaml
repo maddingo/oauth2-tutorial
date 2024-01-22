@@ -17,7 +17,7 @@ spec:
         kubernetes.io/os: linux
       containers:
         - name: resource-server
-          image: acrlypfelles.azurecr.io/no.lyse.plattform.oauth2-playground.resource-server:2.0.0-SNAPSHOT
+          image: acrlypfelles.azurecr.io/no.lyse.plattform.oauth2-playground.resource-server:2.0.0-PR-5-SNAPSHOT
           args:
             - --spring.profiles.active=azure,dev
             - --spring.security.oauth2.resourceserver.jwt.issuer-uri=https://login.microsoftonline.com/22ca942f-06c2-4f38-9407-0e447dedbb67/v2.0
