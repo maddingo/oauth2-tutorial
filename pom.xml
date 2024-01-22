@@ -191,4 +191,23 @@
             </snapshots>
         </repository>
     </repositories>
+
+    <profiles>
+        <profile>
+            <id>smoke-tests</id>
+            <activation>
+                <property>
+                    <name>acr.publish</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>authorization-server</module>
+                <module>resource-server</module>
+                <module>client-app</module>
+                <module>quotes-api</module>
+            </modules>
+
+        </profile>
+    </profiles>
 </project>
