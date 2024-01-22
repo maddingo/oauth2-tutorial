@@ -198,7 +198,7 @@
             <activation>
                 <property>
                     <name>acr.publish</name>
-                    <value>true</value>
+                    <value>false</value>
                 </property>
             </activation>
             <modules>
@@ -207,7 +207,9 @@
                 <module>client-app</module>
                 <module>quotes-api</module>
             </modules>
-
+            <build>
+                <defaultGoal>package</defaultGoal>
+            </build>
         </profile>
     </profiles>
 </project>
