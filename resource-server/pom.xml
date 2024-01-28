@@ -128,7 +128,7 @@
                 <executions>
                     <execution>
                         <id>copy-openapi</id>
-                        <phase>generate-resources</phase>
+                        <phase>generate-sources</phase>
                         <goals><goal>copy-dependencies</goal></goals>
                         <configuration>
                             <includeClassifiers>openapi</includeClassifiers>
@@ -139,35 +139,38 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.openapitools</groupId>
-                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <groupId>io.openapiprocessor</groupId>
+                <artifactId>openapi-processor-maven-plugin</artifactId>
+                <version>2023.1-SNAPSHOT</version>
+
+                <configuration>
+                    <id>spring</id>
+                    <apiPath>${project.build.directory}/dependency/quotes-api-openapi.yaml</apiPath>
+                    <options>
+                        <values>
+                            <!--targetDir>${project.basedir}/target/generated-sources/openapi</targetDir-->
+                            <mapping>${project.basedir}/src/api/mapping.yaml</mapping>
+                            <!--parser>OPENAPI4J</parser-->
+                            <showWarnings>true</showWarnings>
+                        </values>
+                    </options>
+                </configuration>
                 <executions>
                     <execution>
+                        <id>process</id>
+                        <phase>generate-sources</phase>
                         <goals>
-                            <goal>generate</goal>
+                            <goal>process</goal>
                         </goals>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <inputSpec>${project.build.directory}/dependency/quotes-api-openapi.yaml</inputSpec>
-                            <generatorName>spring</generatorName>
-                            <generateSupportingFiles>false</generateSupportingFiles>
-                            <apiPackage>no.lyse.plattform.oauth2playground.quotesapi.api</apiPackage>
-                            <modelPackage>no.lyse.plattform.oauth2playground.quotesapi.model</modelPackage>
-                            <configOptions>
-                                <interfaceOnly>true</interfaceOnly>
-                                <reactive>true</reactive>
-                                <documentationProvider>source</documentationProvider>
-                                <!--annotationLibrary>none</annotationLibrary-->
-                                <requestMappingMode>none</requestMappingMode>
-                                <useSpringController>false</useSpringController>
-                                <useSpringBoot3>true</useSpringBoot3>
-                                <hideGenerationTimestamp>true</hideGenerationTimestamp>
-                                <skipDefaultInterface>true</skipDefaultInterface>
-                                <openApiNullable>false</openApiNullable>
-                            </configOptions>
-                        </configuration>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>io.openapiprocessor</groupId>
+                        <artifactId>openapi-processor-spring</artifactId>
+                        <version>2023.6</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
