@@ -44,9 +44,24 @@ check_prerequisites() {
 start_applications() {
   # start the applications
   echo "Starting the applications..."
-  gnome-terminal -t "Client Application" --working-directory="$CURRDIR" -- bash -c "sleep 5s; $JAVA_BIN -jar client-app/target/client-app.jar"
-  gnome-terminal -t "Resource Server" --working-directory="$CURRDIR" -- bash -c "sleep 5s; $JAVA_BIN -jar resource-server/target/resource-server.jar"
-  gnome-terminal -t "Authorization Server" --working-directory="$CURRDIR" -- bash -c "$JAVA_BIN -jar authorization-server/target/authorization-server.jar"
+  # Define the terminal emulator variable
+  TERMINAL="gnome-terminal"
+  # Check if running in WSL
+  if grep -qi Microsoft /proc/version; then
+    # Set's WindowsTerminal as terminal for WSL
+    # WSL might not recognize Windows Terminal. It needs to be added to WLS's PATH, and either
+    # 1. Direct path: TERMINAL="/mnt/c/Users/<USER>/AppData/Local/Microsoft/WindowsApps/Microsoft.WindowsTerminal_8wekyb3d8bbwe/wt.exe"
+    # 2. Add symlink: sudo ln -s /mnt/c/Users/<USER>/AppData/Local/Microsoft/WindowsApps/Microsoft.WindowsTerminal_8wekyb3d8bbwe/wt.exe /usr/local/bin/wt
+    TERMINAL="wt";
+
+    $TERMINAL wt -w 0 -d "$(wslpath -w $CURRDIR)" --title "Client Application" bash -c "sleep 5 && java -jar client-app/target/client-app.jar"
+    $TERMINAL wt -w 0 -d "$(wslpath -w $CURRDIR)" --title "Resource Server" bash -c "sleep 5 && java -jar resource-server/target/resource-server.jar"
+    $TERMINAL wt -w 0 -d "$(wslpath -w $CURRDIR)" --title "Authorization Server" bash -c "java -jar authorization-server/target/authorization-server.jar"
+  else
+    $TERMINAL -t "Client Application" --working-directory="$CURRDIR" -- bash -c "sleep 5s; $JAVA_BIN -jar client-app/target/client-app.jar"
+    $TERMINAL -t "Resource Server" --working-directory="$CURRDIR" -- bash -c "sleep 5s; $JAVA_BIN -jar resource-server/target/resource-server.jar"
+    $TERMINAL -t "Authorization Server" --working-directory="$CURRDIR" -- bash -c "$JAVA_BIN -jar authorization-server/target/authorization-server.jar"
+  fi
 }
 
 if ! check_prerequisites ; then
