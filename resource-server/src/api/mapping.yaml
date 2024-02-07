@@ -7,7 +7,7 @@ options:
   bean-validation: jakarta
 
 map:
-  result: org.springframework.http.ResponseEntity
+  result: reactor.core.publisher.Mono<org.springframework.http.ResponseEntity>
 
   single: reactor.core.publisher.Mono
   multi: reactor.core.publisher.Flux
