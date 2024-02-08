@@ -7,7 +7,9 @@ options:
   bean-validation: jakarta
 
 map:
-  result: reactor.core.publisher.Mono<org.springframework.http.ResponseEntity>
+# TODO: when implemented in openapi-processor-spring >=2024.1 , should be changed
+#  result: reactor.core.publisher.Mono<org.springframework.http.ResponseEntity>
+#  result: org.springframework.http.ResponseEntity
 
   single: reactor.core.publisher.Mono
   multi: reactor.core.publisher.Flux

@@ -141,14 +141,14 @@
             <plugin>
                 <groupId>io.openapiprocessor</groupId>
                 <artifactId>openapi-processor-maven-plugin</artifactId>
-                <version>2024.1-SNAPSHOT</version>
+                <version>2024.1</version>
 
                 <configuration>
                     <id>spring</id>
                     <apiPath>${project.build.directory}/dependency/quotes-api-openapi.yaml</apiPath>
                     <options>
                         <values>
-                            <!--targetDir>${project.basedir}/target/generated-sources/openapi</targetDir-->
+                            <targetDir>${project.basedir}/target/generated-sources/spring</targetDir> <!-- can be removed when version > 2024.1 is released -->
                             <mapping>${project.basedir}/src/api/mapping.yaml</mapping>
                             <!--parser>OPENAPI4J</parser-->
                             <showWarnings>true</showWarnings>
@@ -168,7 +168,7 @@
                     <dependency>
                         <groupId>io.openapiprocessor</groupId>
                         <artifactId>openapi-processor-spring</artifactId>
-                        <version>2024.1-SNAPSHOT</version>
+                        <version>2023.6.1</version>
                     </dependency>
                 </dependencies>
             </plugin>
