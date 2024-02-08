@@ -27,6 +27,8 @@ jobs:
     permissions:
       contents: write
       packages: write
+      pull-requests: write
+
     steps:
       - uses: actions/checkout@v3
         with:
@@ -40,12 +42,12 @@ jobs:
         with:
           inlineScript: |
             echo ACR_TOKEN=$(az acr login --name acrlypfelles --expose-token | jq -r .accessToken) >> $GITHUB_ENV
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
           # cache: 'maven'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -70,6 +72,6 @@ jobs:
       - name: Build and Deploy release
         run: |
           git switch main
-          mvn -B deploy -Dspring-boot.build-image.publish=true
+          mvn -B deploy -Dacr.publish=true
         env:
           GITHUB_TOKEN: ${{ github.token }}
