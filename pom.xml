@@ -125,23 +125,6 @@
         </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>com.amashchenko.maven.plugin</groupId>
-                <artifactId>gitflow-maven-plugin</artifactId>
-                <configuration>
-                    <pushRemote>true</pushRemote>
-                    <!-- we use major.minor.patch versioning, being 0.1.2 respectively.
-                          By default the minor version is increased.
-                          Hotfixes increase the patch version. -->
-                    <!--suppress UnresolvedMavenProperty -->
-                    <versionDigitToIncrement>${gitflowDigitToIncrement}</versionDigitToIncrement>
-
-                    <gitFlowConfig>
-                        <productionBranch>main</productionBranch>
-                        <developmentBranch>develop</developmentBranch>
-                    </gitFlowConfig>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <executions>
@@ -160,13 +143,6 @@
             </plugin>
         </plugins>
     </build>
-    <modules>
-        <module>authorization-server</module>
-        <module>resource-server</module>
-        <module>client-app</module>
-        <module>quotes-api</module>
-        <module>e2e-tests</module>
-    </modules>
 
     <distributionManagement>
         <repository>
@@ -196,6 +172,31 @@
         <profile>
             <id>smoke-tests</id>
             <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>acr.publish</name>
+                    <value>false</value>
+                </property>
+            </activation>
+            <modules>
+                <module>authorization-server</module>
+                <module>resource-server</module>
+                <module>client-app</module>
+                <module>quotes-api</module>
+            </modules>
+            <build>
+                <defaultGoal>package</defaultGoal>
+            </build>
+            <properties>
+                <spring-boot.build-image.skip>true</spring-boot.build-image.skip>
+<!--                <skip.installnodenpm>true</skip.installnodenpm>--> <!-- skip is not implemented in the mojo -->
+<!--                <skip.npm>true</skip.npm>-->
+            </properties>
+        </profile>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
                 <property>
                     <name>acr.publish</name>
                     <value>true</value>
@@ -206,8 +207,8 @@
                 <module>resource-server</module>
                 <module>client-app</module>
                 <module>quotes-api</module>
+                <module>e2e-tests</module>
             </modules>
-
         </profile>
     </profiles>
 </project>
