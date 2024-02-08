@@ -1,6 +1,6 @@
 package no.lyse.plattform.oauth2playground.resourceserver.data;
 
-import no.lyse.plattform.oauth2playground.quotesapi.model.Quote;
+import no.lyse.plattform.oauth2playground.resourceserver.model.Quote;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -38,7 +38,7 @@ public class QuotesRepository {
         return Flux.fromIterable(quoteMap.values());
     }
     public void addQuote(Quote quote) {
-        quoteMap.put(quote.getId(), quote);
+        quoteMap.put(quote.id(), quote);
     }
 
     public Mono<Quote> getQuote(String id) {

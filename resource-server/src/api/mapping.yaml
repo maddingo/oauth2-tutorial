@@ -1,0 +1,29 @@
+openapi-processor-mapping: v4
+
+options:
+  package-name: no.lyse.plattform.oauth2playground.resourceserver
+  javadoc: false
+  model-type: record
+  bean-validation: jakarta
+
+map:
+# TODO: when implemented in openapi-processor-spring >=2024.1 , should be changed
+#  result: reactor.core.publisher.Mono<org.springframework.http.ResponseEntity>
+#  result: org.springframework.http.ResponseEntity
+
+  single: reactor.core.publisher.Mono
+  multi: reactor.core.publisher.Flux
+
+  types:
+    - type: object @ lombok.Builder
+
+  paths:
+    /quotes:
+      parameters:
+        - add: request => org.springframework.web.server.ServerWebExchange
+    /quote:
+      parameters:
+        - add: request => org.springframework.web.server.ServerWebExchange
+    /quote/{id}:
+      parameters:
+        - add: request => org.springframework.web.server.ServerWebExchange
