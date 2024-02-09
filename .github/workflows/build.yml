@@ -15,6 +15,11 @@ on:
       - "main"
       - "release/*"
   pull_request:
+    types:
+      - edited
+      - opened
+      - reopened
+      - synchronize
     branches:
       - "develop"
       - "main"
