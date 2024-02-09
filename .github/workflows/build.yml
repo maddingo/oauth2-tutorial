@@ -39,10 +39,6 @@ jobs:
       pull-requests: write
 
     steps:
-    - shell: bash
-      run: |
-        echo "Environment variables:"
-        env
     - uses: 'Lyse-AS/lyse-build-java-composite-action@develop'
       with:
         java-version: '21'
