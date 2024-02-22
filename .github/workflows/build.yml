@@ -44,7 +44,7 @@ jobs:
       pull-requests: write
 
     steps:
-    - uses: 'Lyse-AS/lyse-build-java-composite-action@feature/upgrade-action-versions'
+    - uses: 'Lyse-AS/lyse-build-java-composite-action@develop'
       with:
         java-version: '21'
         az-creds: ${{ secrets.AZ_SPN_LYP_ACRPUSH }}
