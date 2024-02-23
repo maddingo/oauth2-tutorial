@@ -141,14 +141,14 @@
             <plugin>
                 <groupId>io.openapiprocessor</groupId>
                 <artifactId>openapi-processor-maven-plugin</artifactId>
-                <version>2023.1-SNAPSHOT</version>
+                <version>2024.1</version>
 
                 <configuration>
                     <id>spring</id>
-                    <apiPath>${project.build.directory}/dependency/quotes-api-openapi.yaml</apiPath>
+                    <apiPath>${project.build.directory}/dependency/quotes-api-openapi1.yaml</apiPath>
                     <options>
                         <values>
-                            <!--targetDir>${project.basedir}/target/generated-sources/openapi</targetDir-->
+                            <targetDir>${project.basedir}/target/generated-sources/spring</targetDir>
                             <mapping>${project.basedir}/src/api/mapping.yaml</mapping>
                             <!--parser>OPENAPI4J</parser-->
                             <showWarnings>true</showWarnings>
@@ -162,13 +162,25 @@
                         <goals>
                             <goal>process</goal>
                         </goals>
+                        <configuration>
+                            <id>spring</id>
+                            <apiPath>${project.build.directory}/dependency/quotes-api-openapi.yaml</apiPath>
+                            <options>
+                                <values>
+                                    <!--targetDir>${project.basedir}/target/generated-sources/openapi</targetDir-->
+                                    <mapping>${project.basedir}/src/api/mapping.yaml</mapping>
+                                    <!--parser>OPENAPI4J</parser-->
+                                    <showWarnings>true</showWarnings>
+                                </values>
+                            </options>
+                        </configuration>
                     </execution>
                 </executions>
                 <dependencies>
                     <dependency>
                         <groupId>io.openapiprocessor</groupId>
                         <artifactId>openapi-processor-spring</artifactId>
-                        <version>2023.6</version>
+                        <version>2024.1</version>
                     </dependency>
                 </dependencies>
             </plugin>

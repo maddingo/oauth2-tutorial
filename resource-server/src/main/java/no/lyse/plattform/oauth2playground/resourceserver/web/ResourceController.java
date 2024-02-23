@@ -20,17 +20,23 @@ public class ResourceController implements Api {
      * Very bad implementation of a quote service. This walks through the entire list of quotes, and filters out the one.
      */
     @Override
-    public ResponseEntity<Mono<Quote>> getQuote(String id, ServerWebExchange exchange) {
-        return ResponseEntity.ok(quotes.getQuote(id));
+    public Mono<ResponseEntity<Mono<Quote>>> getQuote(String id, ServerWebExchange exchange) {
+        return quotes.getQuote(id)
+            .map(Mono::just)
+            .map(ResponseEntity::ok)
+            .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @Override
-    public ResponseEntity<Mono<Quote>> getRandomQuote(ServerWebExchange exchange) {
-        return ResponseEntity.ok(quotes.randomQuote());
+    public Mono<ResponseEntity<Mono<Quote>>> getRandomQuote(ServerWebExchange exchange) {
+        return quotes.randomQuote()
+            .map(Mono::just)
+            .map(ResponseEntity::ok)
+            .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @Override
-    public ResponseEntity<Flux<Quote>> getQuotes(ServerWebExchange exchange) {
-        return ResponseEntity.ok(quotes.quotes());
+    public Flux<Quote> getQuotes(ServerWebExchange exchange) {
+        return quotes.quotes();
     }
 }
