@@ -21,7 +21,7 @@
         <acr.publish>true</acr.publish> <!-- spring-boot.build-image.publish is read-only and can only be used on command line -->
         <maven.deploy.skip>true</maven.deploy.skip> <!-- skip maven deploy in favor of docker push -->
         <artifacts.server>acrlypfelles.azurecr.io</artifacts.server>
-        <nimbus.jose.jwt.version>9.37.3</nimbus.jose.jwt.version>
+        <nimbus.jose.jwt.version>9.37.2</nimbus.jose.jwt.version>
     </properties>
 
     <dependencyManagement>
@@ -37,7 +37,7 @@
                 <!-- Spring boot 3.1.5 has inconsistent dependencies, we have to pin the version here -->
                 <groupId>com.nimbusds</groupId>
                 <artifactId>nimbus-jose-jwt</artifactId>
-                <version>9.37</version>
+                <version>9.37.2</version>
             </dependency>
             <dependency>
                 <groupId>com.azure.spring</groupId>
