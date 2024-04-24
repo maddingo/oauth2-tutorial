@@ -15,6 +15,9 @@ logging:
 #    org.springframework.boot.autoconfigure: DEBUG
 
 spring:
+  codec:
+    log-request-details: true
+
   security:
     oauth2:
       client:
@@ -22,9 +25,10 @@ spring:
           messaging-client-oidc:
             provider: spring
             client-id: messaging-client
-            client-secret: secret
+#            client-authentication-method: none
+            client-secret: 'secret'
             authorization-grant-type: authorization_code
-            redirect-uri: "http://client-app:8080/login/oauth2/code/{registrationId}"
+            redirect-uri: "http://client-app:8080/oauth2/code/{registrationId}"
             scope: openid, profile, message.read,message.write
             client-name: messaging-client-oidc
 #          messaging-client-authorization-code:
@@ -45,7 +49,6 @@ spring:
         provider:
           spring:
             issuer-uri: http://idp:9000
-
 client-app:
   cors:
     allowed-origins: http://localhost:8080,http://localhost:3000,http://client-app:8080
