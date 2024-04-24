@@ -20,27 +20,27 @@ public class ResourceController implements Api {
 
     private final QuotesRepository quotes;
 
+    /**
+     * Very bad implementation of a quote service. This walks through the entire list of quotes, and filters out the one.
+     */
     @Override
-    public Mono<Quote> getQuote(String id, ServerWebExchange exchange) {
+    public Mono<ResponseEntity<Mono<Quote>>> getQuote(String id, ServerWebExchange exchange) {
         return quotes.getQuote(id)
-            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Element with id '%s' not found", id))));
-        // TODO: if we can generate Mono<ResponseEntity<Mono<Quote>>> instead of ResponseEntity<Mono<Quote>> we can use this code:
-//        return quotes.getQuote(id)
-//            .map(q -> ResponseEntity.ok(Mono.just(q)));
+            .map(Mono::just)
+            .map(ResponseEntity::ok)
+            .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @Override
-    public Mono<Quote> getRandomQuote(ServerWebExchange exchange) {
-        return quotes.randomQuote();
-        // TODO: if we can generate Mono<ResponseEntity<Mono<Quote>>> instead of ResponseEntity<Mono<Quote>> we can use this code:
-//        return quotes.randomQuote()
-//            .map(q -> ResponseEntity.ok(Mono.just(q)));
+    public Mono<ResponseEntity<Mono<Quote>>> getRandomQuote(ServerWebExchange exchange) {
+        return quotes.randomQuote()
+            .map(Mono::just)
+            .map(ResponseEntity::ok)
+            .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @Override
     public Flux<Quote> getQuotes(ServerWebExchange exchange) {
         return quotes.quotes();
-        // TODO: if we can generate Mono<ResponseEntity<Mono<Quote>>> instead of ResponseEntity<Mono<Quote>> we can use this code:
-//        return Mono.just(ResponseEntity.ok(quotes.quotes()));
     }
 }
