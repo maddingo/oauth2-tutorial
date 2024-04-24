@@ -3,16 +3,16 @@ server:
   port: 9000
 
 debug: true
-
-auth-server:
-  issuer: 'http://idp:9000'
-  users:
-    - username: "user1"
-      password: "{noop}password"
-      roles:
-        - "USER"
+logging:
+  level:
+    root: info
+    org.springframework.security: debug
+    org.springframework.web: trace
 
 spring:
+  codec:
+    log-request-details: true
+
   security:
     oauth2:
       authorizationserver:
@@ -46,7 +46,10 @@ spring:
                 - "message.write"
             require-authorization-consent: true
 
-logging:
-  level:
-    root: info
- #   org.springframework.security: debug
+auth-server:
+  issuer: 'http://idp:9000'
+  users:
+    - username: "user1"
+      password: "{noop}password"
+      roles:
+        - "USER"
