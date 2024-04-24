@@ -13,11 +13,6 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-oauth2-authorization-server</artifactId>
-                <version>1.1.1</version>
-            </dependency>
-            <dependency>
                 <groupId>net.java.dev.jna</groupId>
                 <artifactId>jna-platform</artifactId>
                 <version>5.14.0</version>
@@ -145,10 +140,10 @@
 
                 <configuration>
                     <id>spring</id>
-                    <apiPath>${project.build.directory}/dependency/quotes-api-openapi1.yaml</apiPath>
+                    <apiPath>${project.build.directory}/dependency/quotes-api-openapi.yaml</apiPath>
                     <options>
                         <values>
-                            <targetDir>${project.basedir}/target/generated-sources/spring</targetDir>
+                            <targetDir>${project.basedir}/target/generated-sources/spring</targetDir> <!-- can be removed when version > 2024.1 is released -->
                             <mapping>${project.basedir}/src/api/mapping.yaml</mapping>
                             <!--parser>OPENAPI4J</parser-->
                             <showWarnings>true</showWarnings>
@@ -162,18 +157,6 @@
                         <goals>
                             <goal>process</goal>
                         </goals>
-                        <configuration>
-                            <id>spring</id>
-                            <apiPath>${project.build.directory}/dependency/quotes-api-openapi.yaml</apiPath>
-                            <options>
-                                <values>
-                                    <!--targetDir>${project.basedir}/target/generated-sources/openapi</targetDir-->
-                                    <mapping>${project.basedir}/src/api/mapping.yaml</mapping>
-                                    <!--parser>OPENAPI4J</parser-->
-                                    <showWarnings>true</showWarnings>
-                                </values>
-                            </options>
-                        </configuration>
                     </execution>
                 </executions>
                 <dependencies>
