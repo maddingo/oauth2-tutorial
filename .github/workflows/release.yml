@@ -23,7 +23,7 @@ concurrency: release
 jobs:
   release:
     if: github.ref == 'refs/heads/develop' || contains(toJSON(github.head_ref), 'release/')
-    runs-on: ubuntu-latest
+    runs-on: ltedev
     permissions:
       contents: write
       packages: write
