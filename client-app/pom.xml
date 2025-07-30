@@ -118,7 +118,7 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.13.2</version>
+                <version>1.15.1</version>
                 <executions>
                     <execution>
                         <id>install node and npm</id>
@@ -132,7 +132,7 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>i -E</arguments>
+                            <arguments>install</arguments>
                         </configuration>
                         <phase>generate-resources</phase>
                     </execution>
@@ -149,8 +149,8 @@
                 </executions>
                 <configuration>
                     <workingDirectory>${project.basedir}/frontend</workingDirectory>
-                    <nodeVersion>v18.16.1</nodeVersion>
-                    <npmVersion>9.5.1</npmVersion>
+                    <nodeVersion>v18.20.8</nodeVersion>
+                    <!--npmVersion>9.5.1</npmVersion-->
                     <!--installDirectory>${project.basedir}/frontend/build</installDirectory-->
                     <skip>${npm.skip}</skip>
                 </configuration>

@@ -1,4 +1,4 @@
-.idea
+.idea/
 *.iml
 
 target/
@@ -17,6 +17,9 @@ buildNumber.properties
 /authorization-server/config/*
 /resource-server/config/*
 /client-app/config/*
+/client-app/frontend/node_modules/
+/client-app/frontend/node/
+/client-app/frontend/.next/
 
 *.orig
 *.log
