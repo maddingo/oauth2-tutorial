@@ -12,6 +12,10 @@
     <name>authorization-server</name>
     <description>authorization-server</description>
 
+    <properties>
+        <image_name>${artifacts.server}/${project.groupId}.${project.artifactId}:${project.version}</image_name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -47,7 +51,7 @@
                 <configuration>
                     <image>
                         <!--suppress UnresolvedMavenProperty -->
-                        <name>${artifacts.server}/${project.groupId}.${project.artifactId}:${project.version}</name>
+                        <name>${image_name}</name>
                         <publish>${acr.publish}</publish>
                         <builder>paketobuildpacks/builder-jammy-base</builder>
                         <env>
@@ -68,7 +72,7 @@
                         <goals>
                             <goal>build-info</goal>
                             <goal>repackage</goal>
-                            <goal>build-image</goal>
+                            <goal>build-image-no-fork</goal>
                         </goals>
                     </execution>
                 </executions>
