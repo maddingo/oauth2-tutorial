@@ -14,7 +14,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <spring.version>3.5.4</spring.version>
-        <azure.spring.starter.version>5.8.0</azure.spring.starter.version>
+        <azure.spring.starter.version>2025.0</azure.spring.starter.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.plugin.validation>VERBOSE</maven.plugin.validation>
