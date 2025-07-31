@@ -13,9 +13,10 @@ on:
           - minor
           - patch
 
-  pull_request:
-    types:
-      - closed
+# disabled for now, as we don't want to unconditionally trigger releases on PR closes
+#  pull_request:
+#    types:
+#      - closed
 
 
 concurrency: release
