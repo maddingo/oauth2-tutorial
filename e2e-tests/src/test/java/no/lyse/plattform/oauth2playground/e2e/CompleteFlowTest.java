@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -31,6 +32,8 @@ public class CompleteFlowTest {
         String releaseVersion = System.getProperty("release.version", "2.0.0-SNAPSHOT");
         String containerRegistry = System.getProperty("artifacts.server", "acrlypfelles.azurecr.io");
 
+        log.info("Resolved: Version: {}, ContainerRegistry: {}", releaseVersion, containerRegistry);
+
         try (AllApps apps = new AllApps(containerRegistry, releaseVersion)) {
             apps.start();
             URI clientAppUri = apps.getClientAppUri();
@@ -40,11 +43,8 @@ public class CompleteFlowTest {
     }
 
     @Test
+    @EnabledIfSystemProperty(named = "selenium.local", matches = "true")
     void runLocalSeleniumTest() {
-        if (!Boolean.getBoolean("selenium.local")) {
-            log.info("Skipping local selenium test");
-            return;
-        }
         WebDriverManager.chromedriver().setup();
         WebDriver driver = ChromeDriver.builder()
             .oneOf(new ChromeOptions())
