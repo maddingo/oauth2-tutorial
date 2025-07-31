@@ -27,7 +27,7 @@ on:
   workflow_dispatch:
     inputs:
       acr-publish:
-        description: 'Sets the Java system property acr.publish that can be used in the POM to control the build lifecycle'
+        description: 'If checked, the workflow will publish the docker images to the container registry'
         required: true
         default: false
         type: boolean
