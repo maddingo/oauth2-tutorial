@@ -2,7 +2,7 @@
 server:
   port: 9000
 
-debug: true
+debug: false
 logging:
   level:
     root: info
@@ -10,9 +10,6 @@ logging:
     org.springframework.web: trace
 
 spring:
-  codec:
-    log-request-details: true
-
   security:
     oauth2:
       authorizationserver:
@@ -45,6 +42,9 @@ spring:
                 - "message.read"
                 - "message.write"
             require-authorization-consent: true
+  http:
+    codecs:
+      log-request-details: true
 
 auth-server:
   issuer: 'http://idp:9000'

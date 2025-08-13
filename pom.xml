@@ -18,7 +18,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.plugin.validation>VERBOSE</maven.plugin.validation>
-        <acr.publish>true</acr.publish> <!-- spring-boot.build-image.publish is read-only and can only be used on command line -->
+        <acr.publish>false</acr.publish> <!-- spring-boot.build-image.publish is read-only and can only be used on command line -->
         <maven.deploy.skip>true</maven.deploy.skip> <!-- skip maven deploy in favor of docker push -->
         <artifacts.server>acrlypfelles.azurecr.io</artifacts.server>
         <nimbus.jose.jwt.version>10.0.2</nimbus.jose.jwt.version>
