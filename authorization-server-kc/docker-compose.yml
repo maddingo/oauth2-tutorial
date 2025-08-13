@@ -1,0 +1,25 @@
+name: keycloak
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:${KC_VERSION:-24.0}
+    environment:
+      KC_HOSTNAME: ${IDP_HOST:-idp}
+      KC_HOSTNAME_PORT: ${IDP_PORT:-9000}
+      KC_HOSTNAME_STRICT_BACKCHANNEL: "true"
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HEALTH_ENABLED: "true"
+      KC_LOG_LEVEL: info
+    volumes:
+      - ./imports:/opt/keycloak/data/import
+    command: ["start-dev", "--http-port", "${IDP_PORT:-9000}", "--https-port", "${IDP_SECURE_PORT:-9443}", "--import-realm"]
+    ports:
+      - "${IDP_PORT:-9000}:${IDP_PORT:-9000}"
+      - "${IDP_SECURE_PORT:-9443}:${IDP_SECURE_PORT:-9443}"
+    networks:
+      - local_network
+networks:
+  local_network:
+    driver: bridge
+
