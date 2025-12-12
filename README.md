@@ -5,6 +5,8 @@ This project runs 3 servers:
 - Resource Server
 - Client Application
 
+TODO : get inspired by https://github.com/eugenp/tutorials.git spring-security-models/spring-security-pkce and spring-security-models/spring-security-pkce-spa
+
 The code originates from https://github.com/spring-projects/spring-authorization-server/tree/main/samples with some slight modifications.
 
 # Authorization Code Flow
