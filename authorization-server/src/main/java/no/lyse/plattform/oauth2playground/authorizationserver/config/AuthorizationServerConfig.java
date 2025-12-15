@@ -100,9 +100,9 @@ public class AuthorizationServerConfig {
             .build();
     }
 
-    /**
-     * Needed after docker test.
-     */
+//    /**
+//     * Needed after docker test.
+//     */
 //    @Bean
 //    public HttpFirewall configureFirewall() {
 //        StrictHttpFirewall strictHttpFirewall = new StrictHttpFirewall();

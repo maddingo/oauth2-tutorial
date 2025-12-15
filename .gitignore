@@ -21,6 +21,9 @@ buildNumber.properties
 /client-app/frontend/node/
 /client-app/frontend/.next/
 
+pkce-spa-client/node_modules/
+pkce-spa-client/.next/
+
 *.orig
 *.log
 *.screenrc
