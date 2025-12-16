@@ -1,0 +1,64 @@
+import React, { useEffect } from 'react';
+import authConfig from '../pkceAuthConfig';
+
+const CallbackHandler = ({
+  authenticated,
+  setAuth,
+  userManager,
+  userInfo,
+  setUserInfo,
+}) => {
+  useEffect(() => {
+    if (authenticated === null) {
+      userManager
+        .signinRedirectCallback()
+        .then((user) => {
+          if (user) {
+            const access_token = user.access_token;
+            fetch(authConfig.userinfo_endpoint, {
+              headers: {
+                Authorization: `Bearer ${access_token}`,
+              },
+            })
+              .then((response) => {
+                if (response.ok) {
+                  return response.json();
+                } else {
+                  throw new Error(response.statusText);
+                }
+              })
+              .then((userInfo) => {
+                console.log(userInfo);
+                setUserInfo(userInfo);
+                setAuth(true);
+              })
+              .catch((error) => {
+                console.debug(error);
+                // setAuth(false);
+              });
+            ;
+          } else {
+            setAuth(false);
+          }
+        })
+        .catch((error) => {
+          setAuth(false);
+        });
+    }
+  }, [authenticated, userManager, setAuth, setUserInfo]);
+
+  if (authenticated === true && userInfo) {
+      return (
+        <div>
+          <h2>Welcome to the Single Page Application, {userInfo.sub}</h2>
+          <div>Log out</div>
+        </div>
+      );
+  } else {
+    return (
+      <div>Loading</div>
+    );
+  }
+};
+
+export default CallbackHandler;

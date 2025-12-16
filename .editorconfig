@@ -528,3 +528,9 @@ indent_size = 2
 # ij_hcl-terraform_spaces_within_braces = false
 # ij_hcl-terraform_spaces_within_brackets = false
 # ij_hcl-terraform_wrap_long_lines = false
+
+[*.json]
+indent_size = 2
+tab_width = 2
+ij_json_space_after_colon = true
+ij_json_space_after_comma = true
