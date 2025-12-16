@@ -24,20 +24,20 @@ check_build_targets() {
 check_prerequisites() {
 
   # check if there is a auth-server entry inn your /etc/hosts file
-  if ! grep -q "auth-server" /etc/hosts ; then
+  if ! grep -q "idp" /etc/hosts ; then
     echo "Please add the following line to your /etc/hosts file:"
-    echo "   127.0.0.1 auth-server"
+    echo "   127.0.0.1 idp"
     echo
     return 1
   fi
   echo "auth-server entry found in /etc/hosts. Continuing..."
 
-  # check if we run java 17
-  if [ "$($JAVA_BIN --version | awk 'NR==1 && $2 ~ /^17\.0/ {print 17}')" != "17" ] ; then
-    echo "You are not running java 17"
+  # check if we run java 17 or later
+  if [ "$(echo 'System.out.println(System.getProperty("java.specification.version"));' |  jshell -s -)" -lt "17" ] ; then
+    echo "You have to run at least Java 17"
     return 1
   else
-    echo "You are running java 17. Continuing..."
+    echo "You are running java 17 or greater. Continuing..."
   fi
 }
 

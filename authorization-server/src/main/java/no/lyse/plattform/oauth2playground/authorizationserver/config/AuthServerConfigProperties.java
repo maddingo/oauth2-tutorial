@@ -3,6 +3,7 @@ package no.lyse.plattform.oauth2playground.authorizationserver.config;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.List;
 import java.util.Set;
@@ -13,6 +14,7 @@ import java.util.Set;
 public class AuthServerConfigProperties {
     private String issuer;
     private List<UserConfig> users;
+    private CorsConfiguration cors;
 
     @Data
     public static class UserConfig {
