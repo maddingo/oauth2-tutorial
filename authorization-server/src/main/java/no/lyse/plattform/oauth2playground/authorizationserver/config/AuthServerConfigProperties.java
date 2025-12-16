@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.List;
-import java.util.Set;
 
 @Component
 @ConfigurationProperties("auth-server")
