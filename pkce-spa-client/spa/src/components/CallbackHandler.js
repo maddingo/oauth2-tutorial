@@ -14,18 +14,29 @@ const CallbackHandler = ({
         .signinRedirectCallback()
         .then((user) => {
           if (user) {
-            setAuth(true);
             const access_token = user.access_token;
             fetch(authConfig.userinfo_endpoint, {
               headers: {
                 Authorization: `Bearer ${access_token}`,
               },
             })
-              .then((response) => response.json())
+              .then((response) => {
+                if (response.ok) {
+                  return response.json();
+                } else {
+                  throw new Error(response.statusText);
+                }
+              })
               .then((userInfo) => {
                 console.log(userInfo);
                 setUserInfo(userInfo);
+                setAuth(true);
+              })
+              .catch((error) => {
+                console.debug(error);
+                // setAuth(false);
               });
+            ;
           } else {
             setAuth(false);
           }
@@ -37,13 +48,16 @@ const CallbackHandler = ({
   }, [authenticated, userManager, setAuth, setUserInfo]);
 
   if (authenticated === true && userInfo) {
-    return (
-      <div>
-        <h2>Welcome to Baeldung, {userInfo.sub}</h2>
-      </div>
-    );
+      return (
+        <div>
+          <h2>Welcome to the Single Page Application, {userInfo.sub}</h2>
+          <div>Log out</div>
+        </div>
+      );
   } else {
-    return <div>Loading</div>;
+    return (
+      <div>Loading</div>
+    );
   }
 };
 

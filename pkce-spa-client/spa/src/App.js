@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './components/LoginHandler';
 import CallbackHandler from './components/CallbackHandler';
@@ -9,25 +9,38 @@ function App() {
     const [authenticated, setAuthenticated] = useState(null);
     const [userInfo, setUserInfo] = useState(null);
 
-    const userManager = new UserManager({
-        userStore: new WebStorageStateStore({ store: window.localStorage }),
-        ...pkceAuthConfig,
-    });
+    // const [userManager, setUserManager] = useState(null);
 
-    function doAuthorize() {
-        userManager.signinRedirect({state: '6c2a55953db34a86b876e9e40ac2a202',});
-    }
+    const userManager = new UserManager({
+      userStore: new WebStorageStateStore({store: window.localStorage}),
+      ...pkceAuthConfig,
+    });
+    userManager.removeUser();
+    userManager.events.addAccessTokenExpired(() => {
+      console.log('Access token expired');
+    })
 
     useEffect(() => {
-        userManager.getUser().then((user) => {
-            if (user) {
-                setAuthenticated(true);
-            } 
-            else {
-                setAuthenticated(false);
-            }
-      });
-    }, [userManager]);
+      console.log(`has UserInfo ${userInfo}`)
+      userManager.getUser()
+        .then((user) => {
+          if (user || userInfo) { // TODO for some reason, after authorization, the user is null and the userInfo is != null
+            setAuthenticated(true);
+          }
+          else {
+            setAuthenticated(false);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+      ;
+    }, [userManager, userInfo]);
+
+    function doAuthorize() {
+      console.log('app.doAuthorize');
+      return userManager.signinRedirect({state: '6c2a55953db34a86b876e9e40ac2a202',});
+    }
 
     return (
       <BrowserRouter>
