@@ -1,5 +1,7 @@
 [![Build status](https://github.com/maddingo/oauth2-tutorial/actions/workflows/build.yml/badge.svg)](https://github.com/Lyse-AS/oauth2-playground/actions/workflows/build.yml)
+
 # OAuth2 with OIDC playground
+
 This project runs 3 servers:
 - Authorization Server ([Documentation](authorization-server/README.md))
 - Resource Server
@@ -7,11 +9,8 @@ This project runs 3 servers:
 
 TODO : get inspired by https://github.com/eugenp/tutorials.git spring-security-models/spring-security-pkce and spring-security-models/spring-security-pkce-spa
 
-https://docs.spring.io/spring-authorization-server/reference/guides/how-to-userinfo.html
-
-The code originates from https://github.com/spring-projects/spring-authorization-server/tree/main/samples with some slight modifications.
-
 # Authorization Code Flow
+
 ```mermaid
 sequenceDiagram
     autonumber
