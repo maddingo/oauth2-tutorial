@@ -6,7 +6,7 @@ A minimal Next.js Single Page Application demonstrating OAuth2.1 Authorization C
 
 - **OAuth2.1 PKCE Flow**: Secure authorization without client secrets
 - **TypeScript**: Full type safety
-- **Next.js 14**: Using App Router
+- **Next.js 15**: Using App Router
 - **Session Storage**: Secure temporary storage for code verifier and state
 - **Local Storage**: Persistent storage for tokens (production apps should use httpOnly cookies)
 - **React Context**: Global authentication state management
