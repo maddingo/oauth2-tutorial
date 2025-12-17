@@ -63,7 +63,7 @@ Running the Resource Server and the Client Application requires a running Author
 
 Run the Script `start-apps.sh` to start all 3 servers.
 
-## Build without Azure Container Registry
+## Build with local Container Registry
 ```shell
 docker run -d -p 5000:5000 --restart=always --name registry registry:2
 mvn clean install -Dacr.publish=false -Dartifacts.server=localhost:5000
@@ -72,36 +72,3 @@ This will tag the images with `localhost:5000` as docker registry.
 
 ## Spring Boot and Rest
 See: https://developer.okta.com/blog/2022/06/17/simple-crud-react-and-spring-boot
-
-
-### Run the application on Azure
-See https://github.com/Lyse-AS/deploy-my-application-to-k8s
-
-### Git Workflow
-```mermaid
-gitGraph
-%%    commit
-    commit id: "  "
-    commit id: " "
-    branch develop
-    branch feature/ABC-123-develop-new-feature
-    checkout feature/ABC-123-develop-new-feature
-    commit
-    commit
-    checkout develop
-    branch feature/ABC-124-develop-new-feature
-    commit
-    commit
-    checkout feature/ABC-123-develop-new-feature
-    commit
-    checkout develop
-    merge  feature/ABC-123-develop-new-feature
-    checkout feature/ABC-124-develop-new-feature
-    commit
-    checkout develop
-    merge feature/ABC-124-develop-new-feature
-    checkout main
-    merge develop
-    commit id: "Release" tag: "v1.0.0"
-%%    commit
-```
