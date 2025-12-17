@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/context/AuthContext';
+import Quote from "@/components/Quote";
 
 export default function Home() {
   const { isAuthenticated, userInfo, login, logout } = useAuth();
@@ -43,6 +44,10 @@ export default function Home() {
                 )}
               </>
             )}
+          </div>
+          <div className="quote">
+              <h3>Arthur Schramm Quote</h3>
+              <Quote/>
           </div>
           <button className="button secondary" onClick={logout}>
             Sign Out

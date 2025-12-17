@@ -14,6 +14,8 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.security.Principal;
+
 @RestController
 @RequiredArgsConstructor
 public class ResourceController implements Api {
@@ -25,10 +27,15 @@ public class ResourceController implements Api {
      */
     @Override
     public Mono<ResponseEntity<Mono<Quote>>> getQuote(String id, ServerWebExchange exchange) {
-        return quotes.getQuote(id)
-            .map(Mono::just)
-            .map(ResponseEntity::ok)
-            .defaultIfEmpty(ResponseEntity.notFound().build());
+        return exchange.getPrincipal()
+            .map(Principal::getName)
+            .log()
+            .flatMap(name ->
+                quotes.getQuote(id)
+                    .map(Mono::just)
+                    .map(ResponseEntity::ok)
+                    .defaultIfEmpty(ResponseEntity.notFound().build())
+            );
     }
 
     @Override

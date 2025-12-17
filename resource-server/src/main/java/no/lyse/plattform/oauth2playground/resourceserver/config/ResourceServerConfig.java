@@ -31,6 +31,7 @@ public class ResourceServerConfig {
             .authorizeExchange(exchange -> exchange
                 .pathMatchers("/actuator/**").permitAll()
                 .pathMatchers("/quote/**").hasAuthority("SCOPE_message.read")
+                .pathMatchers("/quote").hasAuthority("SCOPE_message.read")
                 .pathMatchers("/quotes").hasAuthority("SCOPE_message.read")
                 .anyExchange().authenticated())
             .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer

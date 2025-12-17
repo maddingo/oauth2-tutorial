@@ -105,6 +105,19 @@ body {
   word-break: break-all;
 }
 
+.quote {
+    background: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.quote h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: #334155;
+}
+
 .loading {
   text-align: center;
   color: #667eea;
