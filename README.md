@@ -25,7 +25,7 @@ sequenceDiagram
     authorization-server ->> user: redirect to user login
     user ->> authorization-server: login and consent
     authorization-server ->> client-app: send authorization code to callback URL
-    client-app ->> client-app: authorization code + code verifier to /token endpoint
+    client-app ->> authorization-server: authorization code + code verifier to /token endpoint
     authorization-server ->> authorization-server: validate code verifier and challenge
     authorization-server ->> client-app: send id token + access token
     end
