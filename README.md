@@ -7,7 +7,7 @@ This project runs 3 servers:
 - Resource Server
 - Client Application
 
-# Authorization Code Flow
+# Authorization Code Flow with PKCE
 
 ```mermaid
 sequenceDiagram
