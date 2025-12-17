@@ -1,4 +1,4 @@
-[![Build status](https://github.com/Lyse-AS/oauth2-playground/actions/workflows/build.yml/badge.svg)](https://github.com/Lyse-AS/oauth2-playground/actions/workflows/build.yml)
+[![Build status](https://github.com/maddingo/oauth2-tutorial/actions/workflows/build.yml/badge.svg)](https://github.com/Lyse-AS/oauth2-playground/actions/workflows/build.yml)
 # OAuth2 with OIDC playground
 This project runs 3 servers:
 - Authorization Server ([Documentation](authorization-server/README.md))
