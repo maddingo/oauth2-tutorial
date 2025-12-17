@@ -7,8 +7,6 @@ This project runs 3 servers:
 - Resource Server
 - Client Application
 
-TODO : get inspired by https://github.com/eugenp/tutorials.git spring-security-models/spring-security-pkce and spring-security-models/spring-security-pkce-spa
-
 # Authorization Code Flow
 
 ```mermaid
