@@ -2,13 +2,16 @@ management:
   httpexchanges:
     recording: true
 
+logging:
+  level:
+    org.springframework.security: trace
+    org.springframework.web: trace
 spring:
   security:
     oauth2:
-      resourceserver:
+      resource-server:
         jwt:
           issuer-uri: http://idp:9000
-          client-id: messaging-client
 debug: true
 server:
   port: 8090

@@ -4,6 +4,6 @@ export const oauthConfig = {
   userinfoEndpoint: 'http://idp:9000/userinfo',
   clientId: 'public-client',
   redirectUri: 'http://localhost:3000/callback',
-  scope: 'openid profile',
+  scope: 'openid profile message.read',
   responseType: 'code',
 };

@@ -6,7 +6,7 @@ debug: false
 logging:
   level:
     root: info
-    org.springframework.security: debug
+    org.springframework.security: trace
     org.springframework.web: trace
 
 spring:
@@ -21,6 +21,7 @@ spring:
                 - "none"
               authorization-grant-types:
                 - "authorization_code"
+                - "refresh_token"
               redirect-uris:
                 - "http://localhost:8080/login/oauth2/code/messaging-client-oidc"
                 - "http://localhost:8080/login/oauth2/code/messaging-client-authorization-code"
@@ -37,8 +38,24 @@ spring:
               scopes:
                 - "openid"
                 - "profile"
+                - "email"
+                - "message.read"
+                - "message.write"
             require-authorization-consent: true
             require-proof-key: true
+          message-client:
+            registration:
+              client-id: "message-client"
+              client-secret: "{noop}secret"
+              client-authentication-methods:
+                - "client_secret_basic"
+                - "client_secret_post"
+              authorization-grant-types:
+                - "refresh_token"
+                - "client_credentials"
+              scopes:
+                - "message.read"
+                - "message.write"
   http:
     codecs:
       log-request-details: true

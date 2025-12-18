@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/context/AuthContext';
+import Quote from "@/components/Quote";
 
 export default function Home() {
   const { isAuthenticated, userInfo, login, logout } = useAuth();
@@ -11,8 +12,8 @@ export default function Home() {
       <p className="subtitle">Next.js SPA with Authorization Code Flow + PKCE</p>
 
       {!isAuthenticated ? (
-        <div>
-          <p style={{ marginBottom: '1.5rem', color: '#64748b' }}>
+        <div className="not-logged-in">
+          <p className="text">
             Click the button below to authenticate using OAuth2.1 with PKCE.
           </p>
           <button className="button" onClick={login}>
@@ -43,6 +44,10 @@ export default function Home() {
                 )}
               </>
             )}
+          </div>
+          <div className="quote">
+              <h3>Arthur Schramm Quote</h3>
+              <Quote/>
           </div>
           <button className="button secondary" onClick={logout}>
             Sign Out
