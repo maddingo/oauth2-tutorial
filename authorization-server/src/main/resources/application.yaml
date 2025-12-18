@@ -43,6 +43,10 @@ spring:
                 - "message.write"
             require-authorization-consent: true
             require-proof-key: true
+            token-settings:
+              access-token-time-to-live: 5m
+              refresh-token-time-to-live: 24h
+              reuse-refresh-tokens: false
           message-client:
             registration:
               client-id: "message-client"
