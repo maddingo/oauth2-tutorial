@@ -2,6 +2,10 @@ management:
   httpexchanges:
     recording: true
 
+logging:
+  level:
+    org.springframework.security: trace
+    org.springframework.web: trace
 spring:
   security:
     oauth2:

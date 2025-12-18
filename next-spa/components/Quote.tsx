@@ -2,13 +2,24 @@
 
 import { useAuth } from '@/context/AuthContext';
 import {getQuote} from "@/lib/quote-api";
+import {useEffect, useState} from "react";
 
 export default function Quote() {
     const { accessToken } = useAuth();
+    const [quote, setQuote] = useState<{quote: string, author: string} | null>(null);
 
-    //const quote = {quote: "The only way to do great work is to love what you do.", author: "Artur Schramm"};
-    const quote = await getQuote(accessToken!);
-    return (<div>
+    useEffect(() => {
+        if (accessToken) {
+            getQuote(accessToken).then(setQuote).catch(console.error);
+        }
+    }, [accessToken]);
+
+    if (!quote) {
+        return <div>Loading quote...</div>;
+    }
+
+    return (
+            <div>
                 <div className="quote">{quote.quote}</div>
                 <div className="author">{quote.author}</div>
             </div>

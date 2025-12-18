@@ -39,6 +39,8 @@ spring:
                 - "openid"
                 - "profile"
                 - "email"
+                - "message.read"
+                - "message.write"
             require-authorization-consent: true
             require-proof-key: true
           message-client:

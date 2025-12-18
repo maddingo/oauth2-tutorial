@@ -22,9 +22,6 @@ public class ResourceController implements Api {
 
     private final QuotesRepository quotes;
 
-    /**
-     * Very bad implementation of a quote service. This walks through the entire list of quotes, and filters out the one.
-     */
     @Override
     public Mono<ResponseEntity<Mono<Quote>>> getQuote(String id, ServerWebExchange exchange) {
         return exchange.getPrincipal()
