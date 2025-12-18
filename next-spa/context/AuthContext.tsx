@@ -1,144 +1,128 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback, ReactNode } from 'react';
-import { TokenResponse, UserInfo } from '@/lib/oauth';
+import { UserInfo } from '@/lib/oauth';
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  accessToken: string | null;
-  refreshToken: string | null;
-  tokenExpiration: number | null;
   userInfo: UserInfo | null;
+  loading: boolean;
   login: () => void;
-  logout: () => void;
-  setTokens: (tokens: TokenResponse) => void;
-  setUser: (user: UserInfo) => void;
+  logout: () => Promise<void>;
   refreshAccessToken: () => Promise<void>;
-  isTokenExpired: () => boolean;
+  checkSession: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/**
+ * AuthProvider using Backend-for-Frontend (BFF) pattern
+ *
+ * In this pattern:
+ * - Tokens are stored in secure HttpOnly cookies server-side
+ * - Frontend never sees access/refresh tokens
+ * - All OAuth operations go through API routes
+ * - Enhanced security: XSS attacks cannot steal tokens
+ */
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [refreshToken, setRefreshToken] = useState<string | null>(null);
-  const [tokenExpiration, setTokenExpiration] = useState<number | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  // Load tokens from localStorage on mount
-  useEffect(() => {
-    const storedToken = localStorage.getItem('access_token');
-    const storedRefreshToken = localStorage.getItem('refresh_token');
-    const storedExpiration = localStorage.getItem('token_expiration');
-    const storedUser = localStorage.getItem('user_info');
-
-    if (storedToken) {
-      setAccessToken(storedToken);
-    }
-
-    if (storedRefreshToken) {
-      setRefreshToken(storedRefreshToken);
-    }
-
-    if (storedExpiration) {
-      setTokenExpiration(parseInt(storedExpiration, 10));
-    }
-
-    if (storedUser) {
-      try {
-        setUserInfo(JSON.parse(storedUser));
-      } catch (e) {
-        console.error('Failed to parse stored user info', e);
-      }
-    }
-  }, []);
-
-  const login = useCallback(async () => {
-    const { initiateLogin } = await import('@/lib/oauth');
-    initiateLogin();
-  }, []);
-
-  const logout = useCallback(() => {
-    setAccessToken(null);
-    setRefreshToken(null);
-    setTokenExpiration(null);
-    setUserInfo(null);
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('token_expiration');
-    localStorage.removeItem('user_info');
-  }, []);
-
-  const setTokens = useCallback((tokens: TokenResponse) => {
-    setAccessToken(tokens.access_token);
-    localStorage.setItem('access_token', tokens.access_token);
-
-    if (tokens.refresh_token) {
-      setRefreshToken(tokens.refresh_token);
-      localStorage.setItem('refresh_token', tokens.refresh_token);
-    }
-
-    // Calculate expiration with 60-second buffer
-    const expirationTime = Date.now() + (tokens.expires_in - 60) * 1000;
-    setTokenExpiration(expirationTime);
-    localStorage.setItem('token_expiration', expirationTime.toString());
-  }, []);
-
-  const setUser = useCallback((user: UserInfo) => {
-    setUserInfo(user);
-    localStorage.setItem('user_info', JSON.stringify(user));
-  }, []);
-
-  const isTokenExpired = useCallback(() => {
-    if (!tokenExpiration) return true;
-    // Add 60 second buffer to prevent mid-request expiration
-    return Date.now() >= tokenExpiration - 60000;
-  }, [tokenExpiration]);
-
-  const refreshAccessTokenFn = useCallback(async () => {
-    if (!refreshToken) {
-      throw new Error('No refresh token available');
-    }
-
+  // Check session status on mount
+  const checkSession = useCallback(async () => {
     try {
-      const { refreshAccessToken: refreshFn } = await import('@/lib/oauth');
-      const newTokens = await refreshFn(refreshToken);
+      const response = await fetch('/api/auth/session');
 
-      setAccessToken(newTokens.access_token);
-      localStorage.setItem('access_token', newTokens.access_token);
-
-      if (newTokens.refresh_token) {
-        setRefreshToken(newTokens.refresh_token);
-        localStorage.setItem('refresh_token', newTokens.refresh_token);
+      if (response.ok) {
+        const data = await response.json();
+        setIsAuthenticated(data.isAuthenticated);
+        setUserInfo(data.user);
+      } else {
+        setIsAuthenticated(false);
+        setUserInfo(null);
       }
+    } catch (error) {
+      console.error('Failed to check session:', error);
+      setIsAuthenticated(false);
+      setUserInfo(null);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-      const expirationTime = Date.now() + (newTokens.expires_in - 60) * 1000;
-      setTokenExpiration(expirationTime);
-      localStorage.setItem('token_expiration', expirationTime.toString());
+  useEffect(() => {
+    checkSession();
+  }, [checkSession]);
+
+  /**
+   * Redirect to API login route
+   * The API route handles OAuth flow and sets secure cookies
+   */
+  const login = useCallback(() => {
+    window.location.href = '/api/auth/login';
+  }, []);
+
+  /**
+   * Call API logout route to clear secure cookies
+   */
+  const logout = useCallback(async () => {
+    try {
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        setIsAuthenticated(false);
+        setUserInfo(null);
+        console.log('Logged out successfully');
+      } else {
+        console.error('Logout failed');
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  }, []);
+
+  /**
+   * Call API refresh route to refresh access token
+   * Tokens are managed server-side in secure cookies
+   */
+  const refreshAccessToken = useCallback(async () => {
+    try {
+      const response = await fetch('/api/auth/refresh', {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        console.error('Token refresh failed');
+        setIsAuthenticated(false);
+        setUserInfo(null);
+        throw new Error('Token refresh failed');
+      }
 
       console.log('Token refreshed successfully');
+      // Re-check session to get updated user info
+      await checkSession();
     } catch (error) {
-      console.error('Token refresh failed:', error);
-      logout();
+      console.error('Token refresh error:', error);
+      setIsAuthenticated(false);
+      setUserInfo(null);
       throw error;
     }
-  }, [refreshToken, logout]);
+  }, [checkSession]);
 
   const authValue = useMemo(
     () => ({
-      isAuthenticated: !!accessToken,
-      accessToken,
-      refreshToken,
-      tokenExpiration,
+      isAuthenticated,
       userInfo,
+      loading,
       login,
       logout,
-      setTokens,
-      setUser,
-      refreshAccessToken: refreshAccessTokenFn,
-      isTokenExpired,
+      refreshAccessToken,
+      checkSession,
     }),
-    [accessToken, refreshToken, tokenExpiration, userInfo, login, logout, setTokens, setUser, refreshAccessTokenFn, isTokenExpired]
+    [isAuthenticated, userInfo, loading, login, logout, refreshAccessToken, checkSession]
   );
 
   return (

@@ -33,6 +33,7 @@ spring:
                 - "http://localhost:3000/login/oauth2/code/messaging-client-authorization-code"
                 - "http://localhost:3000/authorized"
                 - "http://localhost:3000/callback"
+                - "http://localhost:3000/api/auth/callback"
               post-logout-redirect-uris:
                 - "http://client-app:8080/"
               scopes:
