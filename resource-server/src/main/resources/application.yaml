@@ -7,7 +7,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://idp:9000
+          issuer-uri: http://idp:9000/realms/lyse-tele/
           client-id: messaging-client
 debug: true
 server:

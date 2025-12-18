@@ -48,8 +48,7 @@ spring:
             client-name: messaging-client-client-credentials
         provider:
           spring:
-            #issuer-uri: http://idp:9000/realms/lyse-tele
-            issuer-uri: http://idp:9000
+            issuer-uri: http://idp:9000/realms/lyse-tele
 client-app:
   cors:
     allowed-origins: http://localhost:8080,http://localhost:3000,http://client-app:8080

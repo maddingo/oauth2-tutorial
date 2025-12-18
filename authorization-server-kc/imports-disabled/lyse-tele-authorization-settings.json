@@ -1,0 +1,105 @@
+{
+    "authorizationSettings" : {
+        "allowRemoteResourceManagement" : true,
+        "policyEnforcementMode" : "ENFORCING",
+        "resources" : [ {
+            "name" : "Default Resource",
+            "type" : "urn:messaging-client:resources:default",
+            "ownerManagedAccess" : false,
+            "attributes" : { },
+            "_id" : "1bc2b9d3-bb62-4256-997d-e7260f90ea4c",
+            "uris" : [ "/*" ]
+        }, {
+            "name" : "message",
+            "ownerManagedAccess" : false,
+            "displayName" : "",
+            "attributes" : { },
+            "_id" : "59c58ddb-1f31-4bde-ac47-c597194edc92",
+            "uris" : [ ],
+            "scopes" : [ {
+                "name" : "message.write"
+            }, {
+                "name" : "message.read"
+            } ],
+            "icon_uri" : ""
+        } ],
+        "policies" : [ {
+            "id" : "c641c8af-8242-4ac2-b3bc-a1646ad655dd",
+            "name" : "Default Policy",
+            "description" : "A policy that grants access only for users within this realm",
+            "type" : "js",
+            "logic" : "POSITIVE",
+            "decisionStrategy" : "AFFIRMATIVE",
+            "config" : {
+                "code" : "// by default, grants any permission associated with this policy\n$evaluation.grant();\n"
+            }
+        }, {
+            "id" : "9e5328b7-282f-4205-9230-feebdc281fb7",
+            "name" : "messageReadPolicy",
+            "description" : "",
+            "type" : "role",
+            "logic" : "POSITIVE",
+            "decisionStrategy" : "UNANIMOUS",
+            "config" : {
+                "roles" : "[{\"id\":\"message-reader\",\"required\":true}]"
+            }
+        }, {
+            "id" : "2db07894-2ed0-4fa1-81f3-d9e8ed46d173",
+            "name" : "messageWritePolicy",
+            "description" : "",
+            "type" : "role",
+            "logic" : "POSITIVE",
+            "decisionStrategy" : "UNANIMOUS",
+            "config" : {
+                "roles" : "[{\"id\":\"message-writer\",\"required\":false}]"
+            }
+        }, {
+            "id" : "44501270-f88c-4752-a5d0-058c2aa74eae",
+            "name" : "Default Permission",
+            "description" : "A permission that applies to the default resource type",
+            "type" : "resource",
+            "logic" : "POSITIVE",
+            "decisionStrategy" : "UNANIMOUS",
+            "config" : {
+                "defaultResourceType" : "urn:messaging-client:resources:default",
+                "applyPolicies" : "[\"Default Policy\"]"
+            }
+        }, {
+            "id" : "7788f7df-ede2-42ba-8d2e-f38c27cb49ba",
+            "name" : "messageReadPermission",
+            "description" : "",
+            "type" : "scope",
+            "logic" : "POSITIVE",
+            "decisionStrategy" : "UNANIMOUS",
+            "config" : {
+                "defaultResourceType" : "",
+                "resources" : "[\"message\"]",
+                "scopes" : "[\"message.read\"]",
+                "applyPolicies" : "[\"messageReadPolicy\"]"
+            }
+        }, {
+            "id" : "7585333c-cc8e-4ccf-81f5-bf8d7da88203",
+            "name" : "messageWritePermission",
+            "description" : "",
+            "type" : "scope",
+            "logic" : "POSITIVE",
+            "decisionStrategy" : "UNANIMOUS",
+            "config" : {
+                "resources" : "[\"message\"]",
+                "scopes" : "[\"message.write\"]",
+                "applyPolicies" : "[\"messageWritePolicy\"]"
+            }
+        } ],
+        "scopes" : [ {
+            "id" : "b315686f-b656-4833-914e-cdc7e683adf6",
+            "name" : "message.read",
+            "iconUri" : ""
+        }, {
+            "id" : "a5472b26-a301-430e-b862-a9757f342f8c",
+            "name" : "message.write",
+            "iconUri" : ""
+        } ],
+        "decisionStrategy" : "UNANIMOUS"
+    }
+
+}
