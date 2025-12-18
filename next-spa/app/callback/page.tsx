@@ -80,6 +80,9 @@ function CallbackContent() {
         const tokens = await exchangeCodeForToken(code);
         setTokens(tokens);
 
+        const expiresIn = tokens.expires_in;
+        console.log('Token exchange successful:', { expiresIn });
+
         // Fetch user info
         const userInfo = await fetchUserInfo(tokens.access_token);
         setUser(userInfo);
