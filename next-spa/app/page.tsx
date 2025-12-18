@@ -12,8 +12,8 @@ export default function Home() {
       <p className="subtitle">Next.js SPA with Authorization Code Flow + PKCE</p>
 
       {!isAuthenticated ? (
-        <div>
-          <p style={{ marginBottom: '1.5rem', color: '#64748b' }}>
+        <div className="not-logged-in">
+          <p className="text">
             Click the button below to authenticate using OAuth2.1 with PKCE.
           </p>
           <button className="button" onClick={login}>

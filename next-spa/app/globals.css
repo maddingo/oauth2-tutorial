@@ -131,3 +131,8 @@ body {
   border-radius: 6px;
   margin-bottom: 1rem;
 }
+
+.not-logged-in .text {
+    margin-bottom: 1.5rem;
+    color: #64748b;
+}
