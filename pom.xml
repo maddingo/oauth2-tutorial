@@ -34,26 +34,26 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
+            <!--dependency>
                 <groupId>com.azure.spring</groupId>
                 <artifactId>spring-cloud-azure-starter-active-directory</artifactId>
                 <version>${azure.spring.starter.version}</version>
-            </dependency>
+            </dependency-->
             <dependency>
                 <groupId>net.java.dev.jna</groupId>
                 <artifactId>jna</artifactId>
                 <version>5.14.0</version>
             </dependency>
-            <dependency>
+            <!--dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-oauth2-authorization-server</artifactId>
                 <version>7.0.2</version>
-            </dependency>
-            <dependency>
+            </dependency-->
+            <!--dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
-            </dependency>
+            </dependency-->
         </dependencies>
     </dependencyManagement>
 

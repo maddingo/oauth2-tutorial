@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="AuthorizationServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <module name="authorization-server" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="no.lyse.plattform.oauth2playground.authorizationserver.AuthorizationServerApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
