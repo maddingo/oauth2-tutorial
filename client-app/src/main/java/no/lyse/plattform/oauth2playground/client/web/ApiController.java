@@ -3,7 +3,7 @@ package no.lyse.plattform.oauth2playground.client.web;
 import lombok.extern.slf4j.Slf4j;
 import no.lyse.plattform.oauth2playground.quotesapi.model.Quote;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
+import org.springframework.boot.security.oauth2.client.autoconfigure.OAuth2ClientProperties;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMessage;
 import org.springframework.http.MediaType;

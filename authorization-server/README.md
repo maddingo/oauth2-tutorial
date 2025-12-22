@@ -21,7 +21,7 @@ server:
 #debug: true
 
 auth-server:
-  issuer: 'http://idp:8080'
+  issuer: 'http://idp:9000'
   users:
     - username: "user1"
       password: "{noop}password"
