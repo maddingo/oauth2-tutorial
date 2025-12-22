@@ -22,48 +22,38 @@ This Next.js application implements the **Backend-for-Frontend (BFF) pattern** f
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        Browser                               │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │  React Components (No tokens in JavaScript)          │  │
-│  │  - AuthContext: Manages auth state                   │  │
-│  │  - Quote Component: Fetches quotes via API proxy     │  │
-│  └──────────────────────────────────────────────────────┘  │
-│                         │ HTTP requests (no tokens)          │
-│                         ▼                                    │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │  HttpOnly Cookies (Secure, SameSite)                 │  │
-│  │  - access_token                                       │  │
-│  │  - refresh_token                                      │  │
-│  │  - token_expiration                                   │  │
-│  └──────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-                         │
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│              Next.js Server (BFF Layer)                      │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │  API Routes                                           │  │
-│  │  - /api/auth/login        → Initiates OAuth          │  │
-│  │  - /api/auth/callback     → Handles OAuth callback   │  │
-│  │  - /api/auth/logout       → Clears cookies           │  │
-│  │  - /api/auth/refresh      → Refreshes access token   │  │
-│  │  - /api/auth/session      → Checks auth status       │  │
-│  │  - /api/quotes            → Proxies to resource API  │  │
-│  └──────────────────────────────────────────────────────┘  │
-│                         │ Bearer Token                       │
-└─────────────────────────────────────────────────────────────┘
-                         │
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│              External Services                               │
-│  ┌────────────────────┐      ┌────────────────────┐        │
-│  │  Authorization     │      │  Resource Server   │        │
-│  │  Server (IDP)      │      │  (Quote API)       │        │
-│  │  Port 9000         │      │  Port 8090         │        │
-│  └────────────────────┘      └────────────────────┘        │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph Browser["Browser"]
+        direction TB
+        RC["React Components<br/>(No tokens in JavaScript)<br/>- AuthContext: Manages auth state<br/>- Quote Component: Fetches quotes via API proxy"]
+        Cookies["HttpOnly Cookies<br/>(Secure, SameSite)<br/>- access_token<br/>- refresh_token<br/>- token_expiration"]
+        RC -->|"HTTP requests<br/>(no tokens)"| Cookies
+    end
+
+    subgraph BFF["Next.js Server (BFF Layer)"]
+        direction TB
+        API["API Routes<br/>- /api/auth/login → Initiates OAuth<br/>- /api/auth/callback → Handles OAuth callback<br/>- /api/auth/logout → Clears cookies<br/>- /api/auth/refresh → Refreshes access token<br/>- /api/auth/session → Checks auth status<br/>- /api/quotes → Proxies to resource API"]
+    end
+
+    subgraph External["External Services"]
+        direction LR
+        IDP["Authorization Server (IDP)<br/>Port 9000"]
+        RS["Resource Server<br/>(Quote API)<br/>Port 8090"]
+    end
+
+    Cookies -->|"credentials: 'include'"| API
+    API -->|"Bearer Token"| IDP
+    API -->|"Bearer Token"| RS
+
+    style Browser fill:#e1f5ff
+    style BFF fill:#fff3cd
+    style External fill:#f8d7da
+    style RC fill:#b3e5fc
+    style Cookies fill:#90caf9
+    style API fill:#ffe082
+    style IDP fill:#f48fb1
+    style RS fill:#f48fb1
 ```
 
 ## Implementation Details
