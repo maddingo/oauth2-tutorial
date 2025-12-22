@@ -11,17 +11,18 @@
     <description>OAuth2 Playground</description>
 
     <properties>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>25</maven.compiler.target>
-        <spring.version>4.0.1</spring.version>
-        <azure.spring.starter.version>6.1.0</azure.spring.starter.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <spring.version>3.5.8</spring.version>
+        <azure.spring.starter.version>5.21.0</azure.spring.starter.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.plugin.validation>VERBOSE</maven.plugin.validation>
         <acr.publish>false</acr.publish> <!-- spring-boot.build-image.publish is read-only and can only be used on command line -->
         <maven.deploy.skip>true</maven.deploy.skip> <!-- skip maven deploy in favor of docker push -->
         <artifacts.server>acrlypfelles.azurecr.io</artifacts.server>
-        <nimbus.jose.jwt.version>10.4</nimbus.jose.jwt.version>
+        <!--nimbus.jose.jwt.version>10.0.2</nimbus.jose.jwt.version-->
+        <nimbus.jose.jwt.version>9.37.4</nimbus.jose.jwt.version>
         <lombok.version>1.18.42</lombok.version>
     </properties>
 
@@ -47,7 +48,7 @@
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-oauth2-authorization-server</artifactId>
-                <version>7.0.2</version>
+                <version>1.5.3</version>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>

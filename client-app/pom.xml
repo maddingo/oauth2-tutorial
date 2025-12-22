@@ -80,7 +80,7 @@
         </dependency>
     </dependencies>
 
-    <!--dependencyManagement>
+    <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>com.nimbusds</groupId>
@@ -88,7 +88,7 @@
                 <version>${nimbus.jose.jwt.version}</version>
             </dependency>
         </dependencies>
-    </dependencyManagement-->
+    </dependencyManagement>
 
     <build>
         <finalName>${project.artifactId}</finalName>

@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
@@ -18,7 +18,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
- * Following <a href="https://docs.spring.io/spring-security/reference/servlet/oauth2/authorization-server/getting-started.html">How-to: Authenticate using a Single Page Application with PKCE</a>
+ * Following <a href="https://docs.spring.io/spring-authorization-server/reference/guides/how-to-pkce.html">How-to: Authenticate using a Single Page Application with PKCE</a>
  */
 @Configuration(proxyBeanMethods = false)
 @Slf4j
@@ -31,24 +31,29 @@ public class AuthorizationServerConfig {
     @Bean
     @Order(1)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
-        return http
-            .oauth2AuthorizationServer(srv -> {
-                http.securityMatcher(srv.getEndpointsMatcher());
-                srv
-                    .oidc(Customizer.withDefaults());
-            })
+        OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
+            OAuth2AuthorizationServerConfigurer.authorizationServer();
+
+        http
+            .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
+            .with(authorizationServerConfigurer, (authorizationServer) ->
+                authorizationServer
+                    .oidc(Customizer.withDefaults())	// Enable OpenID Connect 1.0
+            )
             .authorizeHttpRequests((authorize) ->
                 authorize
                     .anyRequest().authenticated()
             )
+            // Redirect to the login page when not authenticated from the
+            // authorization endpoint
             .exceptionHandling((exceptions) -> exceptions
                 .defaultAuthenticationEntryPointFor(
                     new LoginUrlAuthenticationEntryPoint("/login"),
                     new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
                 )
-            )
-            .cors(Customizer.withDefaults())
-            .build();
+            );
+
+        return http.cors(Customizer.withDefaults()).build();
     }
 
     // @formatter:off
