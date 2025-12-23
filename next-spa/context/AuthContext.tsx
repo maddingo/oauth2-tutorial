@@ -1,75 +1,128 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback, ReactNode } from 'react';
-import { TokenResponse, UserInfo } from '@/lib/oauth';
+import { UserInfo } from '@/lib/oauth';
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  accessToken: string | null;
   userInfo: UserInfo | null;
+  loading: boolean;
   login: () => void;
-  logout: () => void;
-  setTokens: (tokens: TokenResponse) => void;
-  setUser: (user: UserInfo) => void;
+  logout: () => Promise<void>;
+  refreshAccessToken: () => Promise<void>;
+  checkSession: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/**
+ * AuthProvider using Backend-for-Frontend (BFF) pattern
+ *
+ * In this pattern:
+ * - Tokens are stored in secure HttpOnly cookies server-side
+ * - Frontend never sees access/refresh tokens
+ * - All OAuth operations go through API routes
+ * - Enhanced security: XSS attacks cannot steal tokens
+ */
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  // Load tokens from localStorage on mount
-  useEffect(() => {
-    const storedToken = localStorage.getItem('access_token');
-    const storedUser = localStorage.getItem('user_info');
+  // Check session status on mount
+  const checkSession = useCallback(async () => {
+    try {
+      const response = await fetch('/api/auth/session');
 
-    if (storedToken) {
-      setAccessToken(storedToken);
-    }
-
-    if (storedUser) {
-      try {
-        setUserInfo(JSON.parse(storedUser));
-      } catch (e) {
-        console.error('Failed to parse stored user info', e);
+      if (response.ok) {
+        const data = await response.json();
+        setIsAuthenticated(data.isAuthenticated);
+        setUserInfo(data.user);
+      } else {
+        setIsAuthenticated(false);
+        setUserInfo(null);
       }
+    } catch (error) {
+      console.error('Failed to check session:', error);
+      setIsAuthenticated(false);
+      setUserInfo(null);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
-  const login = useCallback(async () => {
-    const { initiateLogin } = await import('@/lib/oauth');
-    initiateLogin();
+  useEffect(() => {
+    checkSession();
+  }, [checkSession]);
+
+  /**
+   * Redirect to API login route
+   * The API route handles OAuth flow and sets secure cookies
+   */
+  const login = useCallback(() => {
+    window.location.href = '/api/auth/login';
   }, []);
 
-  const logout = useCallback(() => {
-    setAccessToken(null);
-    setUserInfo(null);
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('user_info');
+  /**
+   * Call API logout route to clear secure cookies
+   */
+  const logout = useCallback(async () => {
+    try {
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        setIsAuthenticated(false);
+        setUserInfo(null);
+        console.log('Logged out successfully');
+      } else {
+        console.error('Logout failed');
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   }, []);
 
-  const setTokens = useCallback((tokens: TokenResponse) => {
-    setAccessToken(tokens.access_token);
-    localStorage.setItem('access_token', tokens.access_token);
-  }, []);
+  /**
+   * Call API refresh route to refresh access token
+   * Tokens are managed server-side in secure cookies
+   */
+  const refreshAccessToken = useCallback(async () => {
+    try {
+      const response = await fetch('/api/auth/refresh', {
+        method: 'POST',
+      });
 
-  const setUser = useCallback((user: UserInfo) => {
-    setUserInfo(user);
-    localStorage.setItem('user_info', JSON.stringify(user));
-  }, []);
+      if (!response.ok) {
+        console.error('Token refresh failed');
+        setIsAuthenticated(false);
+        setUserInfo(null);
+        throw new Error('Token refresh failed');
+      }
+
+      console.log('Token refreshed successfully');
+      // Re-check session to get updated user info
+      await checkSession();
+    } catch (error) {
+      console.error('Token refresh error:', error);
+      setIsAuthenticated(false);
+      setUserInfo(null);
+      throw error;
+    }
+  }, [checkSession]);
 
   const authValue = useMemo(
     () => ({
-      isAuthenticated: !!accessToken,
-      accessToken,
+      isAuthenticated,
       userInfo,
+      loading,
       login,
       logout,
-      setTokens,
-      setUser,
+      refreshAccessToken,
+      checkSession,
     }),
-    [accessToken, userInfo, login, logout, setTokens, setUser]
+    [isAuthenticated, userInfo, loading, login, logout, refreshAccessToken, checkSession]
   );
 
   return (

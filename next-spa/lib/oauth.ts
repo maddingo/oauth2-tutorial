@@ -112,3 +112,29 @@ export function validateState(receivedState: string): boolean {
   const storedState = sessionStorage.getItem('oauth_state');
   return storedState === receivedState;
 }
+
+/**
+ * Refresh access token using refresh token
+ */
+export async function refreshAccessToken(refreshToken: string): Promise<TokenResponse> {
+  const params = new URLSearchParams({
+    grant_type: 'refresh_token',
+    refresh_token: refreshToken,
+    client_id: oauthConfig.clientId,
+  });
+
+  const response = await fetch(oauthConfig.tokenEndpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: params.toString(),
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Token refresh failed: ${error}`);
+  }
+
+  return response.json();
+}
