@@ -17,8 +17,7 @@ export async function getQuote(accessToken :string): Promise<Quote> {
     }
   });
   if (!response.ok) {
-    console.error(response.text);
-    throw new Error('Failed to fetch quote');
+    throw new Error('Failed to fetch quote: ' + response.text);
   }
     return await response.json();
 }
