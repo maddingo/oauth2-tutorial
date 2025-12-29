@@ -24,3 +24,5 @@ buildNumber.properties
 *.orig
 *.log
 *.screenrc
+
+*.bak
