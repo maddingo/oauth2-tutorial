@@ -6,36 +6,42 @@ import { useCallback } from 'react';
 /**
  * Custom hook for making authenticated API requests with automatic token refresh
  *
- * This implements the Backend-for-Frontend (BFF) pattern:
- * - Tokens are stored in secure HttpOnly cookies server-side
- * - Frontend makes requests with credentials (cookies)
- * - If 401 occurs, automatically refreshes token via API
+ * This implements the reactive strategy:
+ * - Checks if token is expired before each request
+ * - Automatically refreshes token if needed
  * - Retries the request with new token
  */
 export function useAuthenticatedFetch() {
-  const { refreshAccessToken } = useAuth();
+  const { accessToken, isTokenExpired, refreshAccessToken } = useAuth();
 
   const authenticatedFetch = useCallback(
     async (url: RequestInfo | URL, options?: RequestInit): Promise<Response> => {
-      // Make the request with credentials (includes cookies)
-      const response = await makeAuthenticatedRequest(url, options);
+      // Check if we have a token
+      if (!accessToken) {
+        throw new Error('No access token available. Please login.');
+      }
 
-      // If unauthorized, try to refresh the token and retry
-      if (response.status === 401) {
-        console.log('Received 401, attempting token refresh...');
+      // Check if token is expired and refresh if needed
+      if (isTokenExpired()) {
+        console.log('Token expired, refreshing...');
         try {
           await refreshAccessToken();
-          // Retry the request with the new token (now in cookies)
-          return makeAuthenticatedRequest(url, options);
+          // After refresh, get the new token from localStorage
+          const newToken = localStorage.getItem('access_token');
+          if (!newToken) {
+            throw new Error('Token refresh succeeded but no token found');
+          }
+          return makeAuthenticatedRequest(url, options, newToken);
         } catch (error) {
           console.error('Token refresh failed:', error);
           throw new Error('Session expired. Please login again.');
         }
       }
 
-      return response;
+      // Token is valid, make the request
+      return makeAuthenticatedRequest(url, options, accessToken);
     },
-    [refreshAccessToken]
+    [accessToken, isTokenExpired, refreshAccessToken]
   );
 
   return authenticatedFetch;
@@ -43,15 +49,18 @@ export function useAuthenticatedFetch() {
 
 /**
  * Helper function to make the actual authenticated request
- * Uses credentials: 'include' to send cookies with the request
  */
 function makeAuthenticatedRequest(
   url: RequestInfo | URL,
-  options?: RequestInit
+  options: RequestInit | undefined,
+  token: string
 ): Promise<Response> {
+  const headers = new Headers(options?.headers);
+  headers.set('Authorization', `Bearer ${token}`);
+
   return fetch(url, {
     ...options,
-    credentials: 'include', // Include cookies in the request
+    headers,
   });
 }
 
@@ -63,30 +72,37 @@ export async function authenticatedFetch(
   url: RequestInfo | URL,
   options?: RequestInit
 ): Promise<Response> {
-  // Make the request with credentials (includes cookies)
-  const response = await makeAuthenticatedRequest(url, options);
+  const accessToken = localStorage.getItem('access_token');
+  const tokenExpiration = localStorage.getItem('token_expiration');
+  const refreshToken = localStorage.getItem('refresh_token');
 
-  // If unauthorized, try to refresh the token and retry
-  if (response.status === 401) {
-    console.log('Received 401, attempting token refresh...');
+  if (!accessToken) {
+    throw new Error('No access token available. Please login.');
+  }
+
+  // Check if token is expired
+  const isExpired = !tokenExpiration || Date.now() >= parseInt(tokenExpiration, 10);
+
+  if (isExpired && refreshToken) {
+    console.log('Token expired, refreshing...');
     try {
-      const refreshResponse = await fetch('/api/auth/refresh', {
-        method: 'POST',
-        credentials: 'include',
-      });
+      const { refreshAccessToken: refreshFn } = await import('./oauth');
+      const tokens = await refreshFn(refreshToken);
 
-      if (!refreshResponse.ok) {
-        throw new Error('Token refresh failed');
+      // Update localStorage
+      localStorage.setItem('access_token', tokens.access_token);
+      if (tokens.refresh_token) {
+        localStorage.setItem('refresh_token', tokens.refresh_token);
       }
+      const expirationTime = Date.now() + (tokens.expires_in - 60) * 1000;
+      localStorage.setItem('token_expiration', expirationTime.toString());
 
-      console.log('Token refreshed successfully, retrying request');
-      // Retry the request with the new token (now in cookies)
-      return makeAuthenticatedRequest(url, options);
+      return makeAuthenticatedRequest(url, options, tokens.access_token);
     } catch (error) {
       console.error('Token refresh failed:', error);
       throw new Error('Session expired. Please login again.');
     }
   }
 
-  return response;
+  return makeAuthenticatedRequest(url, options, accessToken);
 }
